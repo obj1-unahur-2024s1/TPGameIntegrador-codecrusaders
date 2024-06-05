@@ -1,6 +1,6 @@
 import wollok.game.*
 import rana.*
-program rana {
+program {
     
     game.title("Frogui")
 	game.height(10)//largo
@@ -19,18 +19,15 @@ program rana {
 	
 	
 	// Autos moviendose 
-	program autos {
     game.addVisualCharacter(auto)
   	game.addVisual(auto)
   	// cada dos segundos muevo la caja
   	game.onTick(2000, "movimiento", { auto.movete() })
   	//
-  	
-  	import wollok.game.*
-import objects.*
 
 
-program miPrimerWollokGame {
+
+ miPrimerWollokGame {
 
 	// límites del tablero de juego
 	game.width(14)
