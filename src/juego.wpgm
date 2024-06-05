@@ -1,55 +1,7 @@
 import wollok.game.*
-import rana.*
-program {
-    
-    game.title("Frogui")
-	game.height(10)//largo
-	game.width(10)//ancho
-	
-	
-	game.boardGround("imagen.png")//Foto entera
-	
-    // Mueve la rana 
-	game.addVisualCharacter(rana) // 
-	
-	
-	
-	//Rana cuando se ahoga
-	game.say(rana, rana.Guglu())
-	
-	
-	// Autos moviendose 
-    game.addVisualCharacter(auto)
-  	game.addVisual(auto)
-  	// cada dos segundos muevo la caja
-  	game.onTick(2000, "movimiento", { auto.movete() })
-  	//
+import inicio.*
 
-
-
- miPrimerWollokGame {
-
-	// límites del tablero de juego
-	game.width(14)
-	game.height(8)
-
-	// agregamos a nuestro objeto auto
-	game.addVisualCharacter(rana)
-	
-	game.addVisual(auto)
-  // cada dos segundos muevo la caja
-  	game.onTick(500, "movimiento", { auto.desplazarse() })
-  	
-  	game.addVisual(auto2)
-  // cada dos segundos muevo la caja
-  	game.onTick(500, "movimiento", { auto2.desplazarse() })
-
-	// que arranque el juego!
+program Juego {
+	comienzo.config()
 	game.start()
-
 }
-  	}
-  
-	}
-
-	game.start()
