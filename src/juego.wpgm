@@ -1,8 +1,30 @@
 import wollok.game.*
 import pepita.*
-
-program juego {
-	game.title("Juego Base")
-	game.addVisual(pepita)
+program pepita {
+    
+    game.title("Titulo del juego")
+	game.height(10)//largo
+	game.width(10)//ancho
+	
+	game.ground("imagen.png")//fondo
+	game.boardGround("imagen.png")//Foto entera
+	
+	game.addVisual(nombreDelObjeto)
+	
+	//wollok game hace acciones cuando toco el teclado, para eso uso 
+	// keyboard.tecla().onPressDo{objeto.accion}
+	
+	
+	keyboard.c().onPressDo{pepita.comer(5)} //Ejemplo
+	//como mostrar lo que hago, un cartel o una modificacion en el estado
+	
+	// keyboard.tecla().onPressDo{ game.say ( objecto, objeto.accion())}
+	keyboard.e().onPressDo{ game.say(pepita, pepita.cuantaEnergiaMeQueda()) }
+	//Esto hace que cuando apreto esa tecla me aparezca un cartel con la cantidad de energia que tiene 
+	//Otra manera es cambiar la imagen
+	
+	
+	// Hacer que el objeto se mueva 
+	
+	keyboard.right.onPressDo{objeto.moveteALaDerecha()}
 	game.start()
-}
