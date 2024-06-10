@@ -12,7 +12,7 @@ object comienzo{
 }
 
 class Pantalla {
-	var property position = game.at(0,0)
+	var property position = game.origin()
 	method image() = null
 	method config() {}
 }
@@ -21,5 +21,13 @@ object pantallaInicio inherits Pantalla {
 	override method image() = "pantallaInicio.png"
 	override method config() {
 		keyboard.enter().onPressDo{nivelUno.config()}
+	}
+}
+
+object pantallaGameOver inherits Pantalla {
+	override method image() = "pantallaGameOver.jpg"
+	override method config(){
+		game.addVisual(self)
+		game.schedule(500, { => game.stop()} )
 	}
 }

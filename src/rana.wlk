@@ -1,10 +1,24 @@
 import wollok.game.*
 import niveles.*
+import inicio.*
+import objetosDeNiveles.*
 
 object rana {
 	
 	var property image = "rana.png"
 	var property position = game.origin()
+	var vidas = 3
+	
+	method perderVida(){
+		vidas -= 1
+		if (vidas == 2){
+			dosVidas.config()
+		} else if(vidas == 1){
+			unaVida.config()
+		} else { 
+			image = "ranaMuerta.png"
+		}
+	}
  	
 	method compartePosicion(unaCosa){
 		return self.position() == unaCosa.position()
@@ -12,15 +26,22 @@ object rana {
 	
 	method chocada(unaCosa) {
 		if (self.compartePosicion(unaCosa)) {
-			image = "ranaMuerta.png"
-			game.schedule(200, { => game.stop()})			
+			self.perderVida()
+			if (vidas <= 0){ 
+				game.schedule(300, { => pantallaGameOver.config()})
+			} else {
+				self.position(game.origin())
+			}
 		}
 	}
 	
 	method ganoNivel1() {
-		if (self.position() == nivelUno.llegada1().position() or self.position() == nivelUno.llegada2().position()){
-			game.stop()
+		nivelUno.llegadas().forEach { llegada =>
+			if ( self.position() == llegada.position()){
+				game.stop()
+			}	
 		}
+		
 	}
 	
 	method montada(unaCosa) {
@@ -28,5 +49,5 @@ object rana {
 			game.stop()			
 		}
 	}
-	
+
 }

@@ -3,56 +3,58 @@ import rana.*
 import objetosDeNiveles.*
 
 object nivelUno {
-	const property auto1 = new AutoBlanco(position = game.at(0,6)) 
-	const property auto2 = new AutoNegro(position = game.at(20,8))
-	const property auto3 = new AutoBlanco(position = game.at(0,10))
-	const property auto4 = new AutoNegro(position = game.at(20,12))
-	const property auto5 = new AutoBlanco(position = game.at(0,14))
-	const property malito1= new Malito(position = game.at(2,16))
-	const property llegada1= new Llegada(position = game.at(5,18))
-	const property malito2= new Malito(position = game.at(9,16))
-	const property llegada2= new Llegada(position = game.at(13,18))
-	const property malito3= new Malito(position = game.at(17,16))
 	
-	method config(){		
-		game.clear()
-		
+	const property autos = [ 
+		new AutoBlanco(position = game.at(0,6)),
+		new AutoNegro(position = game.at(20,8)),
+		new AutoBlanco(position = game.at(0,10)),
+		new AutoNegro(position = game.at(20,12)),
+		new AutoBlanco(position = game.at(0,14))
+	]
+	
+	const property malitos = [ 
+		new Malito(position = game.at(2,16)),
+		new Malito(position = game.at(9,16)),
+		new Malito(position = game.at(17,16))
+	]
+	
+	const property llegadas = [
+		new Llegada(position = game.at(5,18)),
+		new Llegada(position = game.at(13,18))
+	]
+
+	
+	method config(){
+		game.clear()	
 		game.addVisual(fondo)
-		
 		game.addVisualCharacter(rana) // Mueve la rana 
+		game.addVisual(tresVidas)
 		
-		// Añade los autos
-		game.addVisual(auto1)
-		game.addVisual(auto2)
-		game.addVisual(auto3)
-		game.addVisual(auto4)
-		game.addVisual(auto5)
-		game.addVisual(malito1)
-		game.addVisual(malito2)
-		game.addVisual(malito3)
-		game.addVisual(llegada1)
-		game.addVisual(llegada2)
+		// añade los autos
+		autos.forEach { auto => game.addVisual(auto) }
 		
-		// Mueve los autos constantemente
-		game.onTick(100,"moverAuto",{auto1.desplazarse()})
-		game.onTick(150,"moverAuto",{auto2.desplazarse()})
-		game.onTick(85,"moverAuto",{auto3.desplazarse()})
-		game.onTick(200,"moverAuto",{auto4.desplazarse()})
-		game.onTick(115,"moverAuto",{auto5.desplazarse()})
+		// añade los fuegos
+		malitos.forEach { malito => game.addVisual(malito) }
 		
-		// Se fija si la rana chocó o se quemó
-		game.onTick(1, "ranaChocada", {rana.chocada(auto1)})
-		game.onTick(1, "ranaChocada", {rana.chocada(auto2)})
-		game.onTick(1, "ranaChocada", {rana.chocada(auto3)})
-		game.onTick(1, "ranaChocada", {rana.chocada(auto4)})
-		game.onTick(1, "ranaChocada", {rana.chocada(auto5)})
-		game.onTick(1, "ranaQuemada", {rana.chocada(malito1)})
-		game.onTick(1, "ranaQuemada", {rana.chocada(malito2)})
-		game.onTick(1, "ranaQuemada", {rana.chocada(malito3)})
+		// añade las llegadas
+		llegadas.forEach { llegada => game.addVisual(llegada) }
 		
-		// Se fija si la rana llegó
-		game.onTick(1, "ranaGanadora", {rana.ganoNivel1()})
+		// Mueve los autos constantemente y comprueba si la rana chocó
+		autos.forEach{ auto =>
+			game.onTick(100, "moverAuto", {auto.desplazarse()} )
+			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
+		}
+		
+		// comprueba si la rana se quemó
+		 malitos.forEach { malito =>
+            game.onTick(1, "ranaQuemada", { rana.chocada(malito) })
+        }
+		
+		// Se fija si la rana llegó a la meta
+		game.onTick(1, "ranaGanadora", { rana.ganoNivel1()} )
+		
 	}
+	
 }
 
 
