@@ -1,4 +1,6 @@
 import wollok.game.*
+import rana.*
+import inicio.*
 
 class Auto {
 	var property position
@@ -53,33 +55,20 @@ class TroncoIzquierdo {
 }
 
 // configuracion de las vidas de la rana
-class Vidas{
-	var property position = game.at(17,17)
-	method image() = ""
-	method config(){}
-	
+class Vidas {
+    var property position = game.at(17,17)
+    const visuals = ["", "1vidas.png", "2vidas.png", "3vidas.png"]
+    var property image = visuals.get(rana.vidasRestantes())
+    
+    method cambiarVisual(){
+        image = visuals.get(rana.vidasRestantes())
+    }
+    
+    method initialize(){
+    	image = visuals.get(3)
+    }
 }
 
-object tresVidas inherits Vidas{
-	override method image() = "3vidas.png"
-}
-
-
-object dosVidas inherits Vidas{
-	override method image() = "2vidas.png"
-	override method config(){
-		game.removeVisual(tresVidas)
-		game.addVisual(self)
-	}
-}
-
-object unaVida inherits Vidas{
-	override method image() = "1vidas.png"
-	override method config(){
-		game.removeVisual(dosVidas)
-		game.addVisual(self)
-	}
-}
 
 
 

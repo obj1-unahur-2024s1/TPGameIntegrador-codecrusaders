@@ -22,13 +22,15 @@ object nivelUno {
 		new Llegada(position = game.at(5,18)),
 		new Llegada(position = game.at(13,18))
 	]
-
 	
-	method config(){
-		game.clear()	
+	var property vidas = new Vidas()
+	
+	method config(){	
 		game.addVisual(fondo)
-		game.addVisualCharacter(rana) // Mueve la rana 
-		game.addVisual(tresVidas)
+		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(vidas)
+		rana.initialize()
+		vidas.initialize()
 		
 		// añade los autos
 		autos.forEach { auto => game.addVisual(auto) }

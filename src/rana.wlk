@@ -4,36 +4,35 @@ import inicio.*
 import objetosDeNiveles.*
 
 object rana {
-	
-	var property image = "rana.png"
-	var property position = game.origin()
-	var vidas = 3
-	
-	method perderVida(){
-		vidas -= 1
-		if (vidas == 2){
-			dosVidas.config()
-		} else if(vidas == 1){
-			unaVida.config()
-		} else { 
-			image = "ranaMuerta.png"
-		}
-	}
- 	
-	method compartePosicion(unaCosa){
-		return self.position() == unaCosa.position()
-	}
-	
-	method chocada(unaCosa) {
-		if (self.compartePosicion(unaCosa)) {
-			self.perderVida()
-			if (vidas <= 0){ 
-				game.schedule(300, { => pantallaGameOver.config()})
-			} else {
-				self.position(game.origin())
-			}
-		}
-	}
+    var property image = "rana.png"
+    var property position = game.origin()
+    var cantVidas = 3
+    
+    method perderVida() {
+        cantVidas -= 1
+        if( cantVidas.between(1, 3)){
+        	nivelUno.vidas().cambiarVisual() // Actualiza el visual de las vidas
+        }
+    }
+ 
+    method vidasRestantes() = cantVidas
+    
+    method compartePosicion(unaCosa) {
+        return self.position() == unaCosa.position()
+    }
+    
+    method chocada(unaCosa) {
+        if (self.compartePosicion(unaCosa)) {
+            self.perderVida()
+            if (cantVidas <= 0) {
+            	image = "ranaMuerta.png"
+                game.schedule(500, { => pantallaGameOver.config()} )
+            } else {
+                self.position(game.origin())
+            }
+        }
+    }
+    
 	
 	method ganoNivel1() {
 		nivelUno.llegadas().forEach { llegada =>
@@ -48,6 +47,12 @@ object rana {
 		if (not self.compartePosicion(unaCosa)) {
 			game.stop()			
 		}
+	}
+	
+	method initialize(){
+		image = "rana.png"
+    	position = game.origin()
+    	cantVidas = 3
 	}
 
 }

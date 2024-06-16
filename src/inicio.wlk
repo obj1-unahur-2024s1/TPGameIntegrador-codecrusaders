@@ -1,5 +1,6 @@
 import wollok.game.*
 import niveles.*
+import rana.*
 
 object comienzo{
 	method config(){
@@ -27,7 +28,12 @@ object pantallaInicio inherits Pantalla {
 object pantallaGameOver inherits Pantalla {
 	override method image() = "pantallaGameOver.jpg"
 	override method config(){
-		game.addVisual(self)
-		game.schedule(500, { => game.stop()} )
+		if (not game.hasVisual(self)){
+			game.addVisual(self)
+		}
+		keyboard.r().onPressDo{
+			game.clear()
+			nivelUno.config()
+		}
 	}
 }
