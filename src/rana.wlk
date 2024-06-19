@@ -8,6 +8,7 @@ object rana {
     var property position = game.origin()
     var cantVidas = 3
     
+    
     method perderVida() {
         cantVidas -= 1
         if( cantVidas.between(1, 3)){
@@ -34,13 +35,13 @@ object rana {
     }
     
 	
-	method ganoNivel1() {
+	method ganoNivel() {
 		nivelUno.llegadas().forEach { llegada =>
 			if ( self.position() == llegada.position()){
-				game.stop()
+				nivel.aumentarNivel()
+				nivel.siguiente()
 			}	
 		}
-		
 	}
 	
 	method montada(unaCosa) {

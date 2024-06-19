@@ -9,7 +9,7 @@ class Auto {
 }
 
 class AutoBlanco inherits Auto {
-  	override method image() = "auto1.png"
+  	override method image() = "autoAzul2.png"
   	
 	override method desplazarse(){
 		position = position.right(1) //asi se modifica siempre las posicones
@@ -20,7 +20,7 @@ class AutoBlanco inherits Auto {
 }
 
 class AutoNegro inherits Auto {
-  	override method image() = "auto2.png"
+  	override method image() = "autoRojo.png"
   	
 	override method desplazarse(){
 		position = position.left(1) //asi se modifica siempre las posicones

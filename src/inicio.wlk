@@ -7,6 +7,7 @@ object comienzo{
 		game.title("Frogui")
 		game.height(20)//largo
 		game.width(20)//ancho
+		game.cellSize(50)
 		game.addVisual(pantallaInicio)
 		pantallaInicio.config()
 	}
@@ -21,9 +22,10 @@ class Pantalla {
 object pantallaInicio inherits Pantalla {
 	override method image() = "pantallaInicio.png"
 	override method config() {
-		keyboard.enter().onPressDo{nivelUno.config()}
+		keyboard.enter().onPressDo{nivel.nivelActual().config()}
 	}
 }
+
 
 object pantallaGameOver inherits Pantalla {
 	override method image() = "pantallaGameOver.jpg"
