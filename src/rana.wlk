@@ -12,7 +12,7 @@ object rana {
     method perderVida() {
         cantVidas -= 1
         if( cantVidas.between(1, 3)){
-        	nivelUno.vidas().cambiarVisual() // Actualiza el visual de las vidas
+        	nivel.nivelActual().vidas().cambiarVisual() // Actualiza el visual de las vidas
         }
     }
  
@@ -36,10 +36,9 @@ object rana {
     
 	
 	method ganoNivel() {
-		nivelUno.llegadas().forEach { llegada =>
+		nivel.nivelActual().llegadas().forEach { llegada =>
 			if ( self.position() == llegada.position()){
 				nivel.aumentarNivel()
-				nivel.siguiente()
 			}	
 		}
 	}

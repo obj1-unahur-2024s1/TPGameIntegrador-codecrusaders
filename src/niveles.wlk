@@ -3,15 +3,16 @@ import rana.*
 import objetosDeNiveles.*
 
 object nivel {
-	const niveles = [nivelUno, nivelDos]
+	const niveles = []
 	var nivel = 0
 	
 	method nivel() = nivel
 	
 	method aumentarNivel(){
-		if(nivel <= niveles.size()){
+		if(nivel == 0){
 			nivel += 1
-		}
+			self.siguiente()
+		} else{ game.stop() }
 	}
 	
 	method nivelActual() = niveles.get(self.nivel())
@@ -19,12 +20,23 @@ object nivel {
 	method siguiente(){
 		const nivelSiguiente = niveles.get(self.nivel())
 		nivelSiguiente.config()
+
+	}
+	
+	method configurarEscenarioDesierto(){
+		niveles.add(nivelUnoDesierto)
+		niveles.add(nivelDosDesierto)
+	}
+	
+	method configurarEscenarioCiudad(){
+		niveles.add(nivelUnoCiudad)
+		niveles.add(nivelDosCiudad)
 	}
 	
 }
 
 
-object nivelUno {
+object nivelUnoCiudad {
 	
 	const property autos = [ 
 		new AutoBlanco(position = game.at(0,6)),
@@ -47,9 +59,11 @@ object nivelUno {
 	
 	var property vidas = new Vidas()
 	
+	const property fondo = "fondo1.png"
+	
 	method config(){
 		game.clear()
-		game.addVisual(fondo)
+		game.addVisual(fondos)
 		game.addVisualCharacter(rana) // Mueve la rana
 		game.addVisual(vidas)
 		rana.initialize()
@@ -83,7 +97,7 @@ object nivelUno {
 }
 
 
-object nivelDos {
+object nivelDosCiudad {
 	
 	const property autos = [ 
 		new AutoBlanco(position = game.at(0,6)),
@@ -100,9 +114,11 @@ object nivelDos {
 	
 	var property vidas = new Vidas()
 	
+	const property fondo = "fondo1.png"
+	
 	method config(){	
 		game.clear()
-		game.addVisual(fondo)
+		game.addVisual(fondos)
 		game.addVisualCharacter(rana) // Mueve la rana
 		game.addVisual(vidas)
 		rana.initialize()
@@ -128,4 +144,105 @@ object nivelDos {
 	
 }
 
+
+object nivelUnoDesierto {
+	
+	const property autos = [ 
+		new AutoBlanco(position = game.at(0,6)),
+		new AutoNegro(position = game.at(20,8)),
+		new AutoBlanco(position = game.at(0,10)),
+		new AutoNegro(position = game.at(20,12)),
+		new AutoBlanco(position = game.at(0,14))
+	]
+
+	const property llegadas = [
+		new Llegada(position = game.at(5,18)),
+		new Llegada(position = game.at(13,18))
+	]
+	
+	var property vidas = new Vidas()
+	
+	const property planta = new PlantaRodadora(position = game.at(8, 2))
+	
+	const property fondo = "fondo2.png"
+	
+	method config(){	
+		game.clear()
+		game.addVisual(fondos)
+		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(vidas)
+		rana.initialize()
+		vidas.initialize()
+		game.addVisual(planta)
+		game.onTick(100, "moverPlanta", {planta.desplazarse()})
+		
+		// añade los autos
+		autos.forEach { auto => game.addVisual(auto) }
+		
+		// añade las llegadas
+		llegadas.forEach { llegada => game.addVisual(llegada) }
+		
+		// Mueve los autos constantemente y comprueba si la rana chocó
+		autos.forEach{ auto =>
+			game.onTick(100, "moverAuto", {auto.desplazarse()} )
+			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
+			game.onTick(1, "ranaChocada", {rana.chocada(planta)} )
+		}
+		
+		
+		// Se fija si la rana llegó a la meta
+		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
+		
+	}
+	
+}
+
+
+
+object nivelDosDesierto {
+	
+	const property autos = [ 
+		new AutoBlanco(position = game.at(0,6)),
+		new AutoNegro(position = game.at(20,8)),
+		new AutoBlanco(position = game.at(0,10)),
+		new AutoNegro(position = game.at(20,12)),
+		new AutoBlanco(position = game.at(0,14))
+	]
+
+	const property llegadas = [
+		new Llegada(position = game.at(5,18)),
+		new Llegada(position = game.at(13,18))
+	]
+	
+	var property vidas = new Vidas()
+	
+	const property fondo = "fondo2.png"
+	
+	method config(){	
+		game.clear()
+		game.addVisual(fondos)
+		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(vidas)
+		rana.initialize()
+		vidas.initialize()
+		
+		// añade los autos
+		autos.forEach { auto => game.addVisual(auto) }
+		
+		// añade las llegadas
+		llegadas.forEach { llegada => game.addVisual(llegada) }
+		
+		// Mueve los autos constantemente y comprueba si la rana chocó
+		autos.forEach{ auto =>
+			game.onTick(100, "moverAuto", {auto.desplazarse()} )
+			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
+		}
+		
+		
+		// Se fija si la rana llegó a la meta
+		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
+		
+	}
+	
+}
 

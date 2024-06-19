@@ -22,7 +22,27 @@ class Pantalla {
 object pantallaInicio inherits Pantalla {
 	override method image() = "pantallaInicio.png"
 	override method config() {
-		keyboard.enter().onPressDo{nivel.nivelActual().config()}
+		keyboard.enter().onPressDo{pantallaEscenarios.config()}
+	}
+}
+
+object pantallaEscenarios inherits Pantalla {
+	override method image() = "pantallaGameOver.jpg"
+	override method config() {
+		game.clear()
+		if (not game.hasVisual(self)){
+			game.addVisual(self)
+		}
+
+		keyboard.c().onPressDo{
+			nivel.configurarEscenarioCiudad()
+			nivel.nivelActual().config()
+		}
+		
+		keyboard.d().onPressDo{
+			nivel.configurarEscenarioDesierto()
+			nivel.nivelActual().config()
+		}
 	}
 }
 
@@ -35,7 +55,7 @@ object pantallaGameOver inherits Pantalla {
 		}
 		keyboard.r().onPressDo{
 			game.clear()
-			nivelUno.config()
+			nivel.nivelActual().config()
 		}
 	}
 }
