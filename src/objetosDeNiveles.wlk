@@ -74,7 +74,9 @@ class Vidas {
 class Tren{
 	var property position
 	method image() = null
-	method desplazarse(){}
+	method desplazarse(){
+		
+	}
 }
 
 class Locomotora inherits Tren{
@@ -83,7 +85,7 @@ class Locomotora inherits Tren{
 		position = position.left(0.5) //asi se modifica siempre las posicones
 
 		if (self.position().x() == -2) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(10)
+			position = position.right(20)
 		}
 	}
 }
@@ -94,7 +96,7 @@ class Vagon inherits Tren{
 		position = position.left(0.5) //asi se modifica siempre las posicones
 
 		if (self.position().x() == -2) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(10)
+			position = position.right(20)
 		}
 	}
 }
@@ -131,9 +133,13 @@ class PlantaRodadora{
 		position = position.left(0.5) //asi se modifica siempre las posicones
 	
 		if (self.position().x() == 0) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(8)
+			position = position.right(20)
 		}
 	}
 }
 
+class Cactus{
+	var property position 
+	method image() = "cactus.png"
+}
 
