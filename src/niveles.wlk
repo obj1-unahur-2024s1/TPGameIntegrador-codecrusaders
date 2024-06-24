@@ -39,17 +39,12 @@ object nivel {
 object nivelUnoCiudad {
 	
 	const property autos = [ 
-		new AutoBlanco(position = game.at(0,6)),
-		new AutoNegro(position = game.at(20,8)),
-		new AutoBlanco(position = game.at(0,10)),
-		new AutoNegro(position = game.at(20,12)),
-		new AutoBlanco(position = game.at(0,14))
-	]
-	
-	const property malitos = [ 
-		new Malito(position = game.at(2,16)),
-		new Malito(position = game.at(9,16)),
-		new Malito(position = game.at(17,16))
+		new AutoDerecha(position = game.at(0,3)),
+		new AutoIzquierda(position = game.at(20,4)),
+		new AutoDerecha(position = game.at(0,6)),
+		new AutoIzquierda(position = game.at(20,7)),
+		new AutoDerecha(position = game.at(0,13)),
+		new AutoIzquierda(position = game.at(0,12))
 	]
 	
 	const property llegadas = [
@@ -57,14 +52,37 @@ object nivelUnoCiudad {
 		new Llegada(position = game.at(13,18))
 	]
 	
+	const property obstaculos = [
+        new CartelStop(position = game.at(14,2)),
+        new Valla(position = game.at(3,8)),
+        new Valla(position = game.at(4,8)),
+        new Valla(position = game.at(5,8)),
+        new Valla(position = game.at(6,8)),
+        new Valla(position = game.at(10,8)),
+        new Valla(position = game.at(11,8)),
+        new Valla(position = game.at(12,8)),
+        new Valla(position = game.at(13,8))
+        
+    ]
+    
+    const property nenufares = [
+        new Nenufar(position = game.at(2,15)),
+        new Nenufar(position = game.at(8,15)),
+        new Nenufar(position = game.at(13,15))
+    ]
+	
 	var property vidas = new Vidas()
 	
-	const property fondo = "fondo1.png"
+	const property fondo = "fondoprueba.jpg"
 	
 	method config(){
 		game.clear()
 		game.addVisual(fondos)
-		game.addVisualCharacter(rana) // Mueve la rana
+		
+		// añade los nenúfares
+        nenufares.forEach { nenufar => game.addVisual(nenufar) }
+        
+		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
@@ -72,26 +90,35 @@ object nivelUnoCiudad {
 		// añade los autos
 		autos.forEach { auto => game.addVisual(auto) }
 		
-		// añade los fuegos
-		malitos.forEach { malito => game.addVisual(malito) }
-		
 		// añade las llegadas
 		llegadas.forEach { llegada => game.addVisual(llegada) }
 		
+		 // añade los obstaculos
+        obstaculos.forEach { obs => game.addVisual(obs) }
+        
 		// Mueve los autos constantemente y comprueba si la rana chocó
 		autos.forEach{ auto =>
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
 			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
 		}
-		
-		// comprueba si la rana se quemó
-		 malitos.forEach { malito =>
-            game.onTick(1, "ranaQuemada", { rana.chocada(malito) })
+        
+        // comprueba si la rana chocó con un obstaculo
+        obstaculos.forEach { obstaculo =>
+            game.onTick(1, "ranaChocadaConObstaculo", { rana.chocadaConObstaculo(obstaculo) })
         }
+        
+        // comprueba si la rana está en una fila específica sin estar sobre un nenúfar
+        game.onTick(1, "comprobarFilaNenufares", { rana.comprobarFilaNenufares(15, nenufares) })
 		
 		// Se fija si la rana llegó a la meta
 		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
 		
+		// Configuración del teclado para mover la rana
+		keyboard.up().onPressDo{rana.moverArriba()}
+		keyboard.down().onPressDo{rana.moverAbajo()}
+		keyboard.left().onPressDo{rana.moverIzquierda()}
+		keyboard.right().onPressDo{rana.moverDerecha()}
+			
 	}
 	
 }
@@ -100,11 +127,11 @@ object nivelUnoCiudad {
 object nivelDosCiudad {
 	
 	const property autos = [ 
-		new AutoBlanco(position = game.at(0,6)),
-		new AutoNegro(position = game.at(20,8)),
-		new AutoBlanco(position = game.at(0,10)),
-		new AutoNegro(position = game.at(20,12)),
-		new AutoBlanco(position = game.at(0,14))
+		new AutoDerecha(position = game.at(0,6)),
+		new AutoIzquierda(position = game.at(20,8)),
+		new AutoDerecha(position = game.at(0,10)),
+		new AutoIzquierda(position = game.at(20,12)),
+		new AutoDerecha(position = game.at(0,14))
 	]
 
 	const property llegadas = [
@@ -119,7 +146,7 @@ object nivelDosCiudad {
 	method config(){	
 		game.clear()
 		game.addVisual(fondos)
-		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(rana) 
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
@@ -140,6 +167,11 @@ object nivelDosCiudad {
 		// Se fija si la rana llegó a la meta
 		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
 		
+		// Configuración del teclado para mover la rana
+		keyboard.up().onPressDo{rana.moverArriba()}
+		keyboard.down().onPressDo{rana.moverAbajo()}
+		keyboard.left().onPressDo{rana.moverIzquierda()}
+		keyboard.right().onPressDo{rana.moverDerecha()}
 	}
 	
 }
@@ -148,11 +180,11 @@ object nivelDosCiudad {
 object nivelUnoDesierto {
 	
 	const property autos = [ 
-		new AutoBlanco(position = game.at(0,6)),
-		new AutoNegro(position = game.at(20,8)),
-		new AutoBlanco(position = game.at(0,10)),
-		new AutoNegro(position = game.at(20,12)),
-		new AutoBlanco(position = game.at(0,14))
+		new AutoDerecha(position = game.at(0,6)),
+		new AutoIzquierda(position = game.at(20,8)),
+		new AutoDerecha(position = game.at(0,10)),
+		new AutoIzquierda(position = game.at(20,12)),
+		new AutoDerecha(position = game.at(0,14))
 	]
 
 	const property llegadas = [

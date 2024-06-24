@@ -9,8 +9,8 @@ class Auto {
 	method desplazarse(){}
 }
 
-class AutoBlanco inherits Auto {
-  	override method image() = "autoAzul2.png"
+class AutoDerecha inherits Auto {
+  	override method image() = "autoAzul1.png"
   	
 	override method desplazarse(){
 		position = position.right(1) //asi se modifica siempre las posicones
@@ -20,8 +20,8 @@ class AutoBlanco inherits Auto {
 	}		
 }
 
-class AutoNegro inherits Auto {
-  	override method image() = "autoRojo.png"
+class AutoIzquierda inherits Auto {
+  	override method image() = "autoVerde1.png"
   	
 	override method desplazarse(){
 		position = position.left(1) //asi se modifica siempre las posicones
@@ -53,6 +53,30 @@ class TroncoDerechos {
 
 class TroncoIzquierdo {
 	
+}
+
+class Nenufar {
+	var property position
+	method image() = "nenufar.png"
+}
+
+// obstaculos
+
+class Obstaculos {
+    var property position
+    method image() = null
+}
+
+class Valla inherits Obstaculos {
+    override method image() = "valla.png"
+}
+
+class CartelStop inherits Obstaculos {
+    override method image() = "cartelstop.png"
+}
+
+class Arbol inherits Obstaculos {
+    override method image() = "arbol.png"
 }
 
 // configuracion de las vidas de la rana
@@ -142,4 +166,3 @@ class Cactus{
 	var property position 
 	method image() = "cactus.png"
 }
-
