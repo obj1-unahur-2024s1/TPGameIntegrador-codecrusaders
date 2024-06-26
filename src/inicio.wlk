@@ -40,8 +40,8 @@ class Pantalla {
 object pantallaInicio inherits Pantalla {	
 	
 	override method config() {
-		fotogramas.add("pantallaInicio.jpg")
-		fotogramas.add("pantallaInicio2.jpg")
+		fotogramas.add("pantallaInicio.png")
+		fotogramas.add("pantallaInicio2.png")
 		
 		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
 		keyboard.enter().onPressDo{

@@ -72,18 +72,34 @@ object rana {
     // Métodos para mover la rana en diferentes direcciones
     method moverArriba() {
         self.move(position.up(1))
+        self.ganoNivel()
+        if(self.position().y() == 21){
+        	position = position.down(1)
+        }
     }
 
     method moverAbajo() {
         self.move(position.down(1))
+        self.ganoNivel()
+        if(self.position().y() == -1){
+        	position = position.up(1)
+        }
     }
 
     method moverIzquierda() {
         self.move(position.left(1))
+        self.ganoNivel()
+        if(self.position().x() == -1){
+        	position = position.right(1)
+        }
     }
 
     method moverDerecha() {
         self.move(position.right(1))
+        self.ganoNivel()
+        if(self.position().x() == 21){
+        	position = position.left(1)
+        }
     }
 	
 	// Método para verificar si la rana está en una fila sin estar sobre un nenúfar

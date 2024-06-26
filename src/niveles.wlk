@@ -68,15 +68,19 @@ object nivelUnoCiudad {
     const property nenufares = [
         new Nenufar(position = game.at(2,15)),
         new Nenufar(position = game.at(8,15)),
-        new Nenufar(position = game.at(13,15))
+        new Nenufar(position = game.at(13,15)),
+        new Nenufar(position = game.at(3,15)),
+        new Nenufar(position = game.at(9,15)),
+        new Nenufar(position = game.at(14,15))
     ]
 	
 	var property vidas = new Vidas()
 	
-	const property fondo = "fondoprueba.jpg"
+	const property fondo = 0
 	
 	method config(){
 		game.clear()
+		fondos.setImage()
 		game.addVisual(fondos)
 		
 		// añade los nenúfares
@@ -101,6 +105,10 @@ object nivelUnoCiudad {
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
 			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
 		}
+		
+		nenufares.forEach{ nenufar =>
+			game.onTick(500, "moveNenufar", {nenufar.desplazarse()})
+		}
         
         // comprueba si la rana chocó con un obstaculo
         obstaculos.forEach { obstaculo =>
@@ -109,9 +117,6 @@ object nivelUnoCiudad {
         
         // comprueba si la rana está en una fila específica sin estar sobre un nenúfar
         game.onTick(1, "comprobarFilaNenufares", { rana.comprobarFilaNenufares(15, nenufares) })
-		
-		// Se fija si la rana llegó a la meta
-		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
 		
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
@@ -141,10 +146,11 @@ object nivelDosCiudad {
 	
 	var property vidas = new Vidas()
 	
-	const property fondo = "fondo1.png"
+	const property fondo = 1
 	
 	method config(){	
 		game.clear()
+		fondos.setImage()
 		game.addVisual(fondos)
 		game.addVisual(rana) 
 		game.addVisual(vidas)
@@ -162,10 +168,6 @@ object nivelDosCiudad {
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
 			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
 		}
-		
-		
-		// Se fija si la rana llegó a la meta
-		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
 		
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
@@ -196,12 +198,13 @@ object nivelUnoDesierto {
 	
 	const property planta = new PlantaRodadora(position = game.at(20, 2))
 	
-	const property fondo = "fondo2.png"
+	const property fondo = 2
 	
 	method config(){	
 		game.clear()
+		fondos.setImage()
 		game.addVisual(fondos)
-		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(rana) // Mueve la rana
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
@@ -221,10 +224,11 @@ object nivelUnoDesierto {
 			game.onTick(1, "ranaChocada", {rana.chocada(planta)} )
 		}
 		
-		
-		// Se fija si la rana llegó a la meta
-		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
-		
+		// Configuración del teclado para mover la rana
+		keyboard.up().onPressDo{rana.moverArriba()}
+		keyboard.down().onPressDo{rana.moverAbajo()}
+		keyboard.left().onPressDo{rana.moverIzquierda()}
+		keyboard.right().onPressDo{rana.moverDerecha()}
 	}
 	
 }
@@ -252,12 +256,13 @@ object nivelDosDesierto {
 	
 	var property vidas = new Vidas()
 	
-	const property fondo = "fondo2.png"
+	const property fondo = 3
 	
 	method config(){	
 		game.clear()
+		fondos.setImage()
 		game.addVisual(fondos)
-		game.addVisualCharacter(rana) // Mueve la rana
+		game.addVisual(rana) // Mueve la rana
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
@@ -282,9 +287,11 @@ object nivelDosDesierto {
             game.onTick(1, "ranaPinchada", { rana.chocada(c) })
         }
 		
-		// Se fija si la rana llegó a la meta
-		game.onTick(1, "ranaGanadora", { rana.ganoNivel()} )
-		
+		// Configuración del teclado para mover la rana
+		keyboard.up().onPressDo{rana.moverArriba()}
+		keyboard.down().onPressDo{rana.moverAbajo()}
+		keyboard.left().onPressDo{rana.moverIzquierda()}
+		keyboard.right().onPressDo{rana.moverDerecha()}
 	}
 	
 }

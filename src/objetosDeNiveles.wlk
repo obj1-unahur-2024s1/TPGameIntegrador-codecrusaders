@@ -33,8 +33,12 @@ class AutoIzquierda inherits Auto {
 
 object fondos{
 	var property position = game.origin()
-	var property image = nivel.nivelActual().fondo()
+	var property fondos = ["fondoCiudad.png", "fondoCiudad2.png", "fondo1.png", "fondo2.png"]
+	var property image = ""
 	
+	method setImage(){
+		image = fondos.get(nivel.nivelActual().fondo())
+	}
 }
 
 class Malito{
@@ -58,6 +62,13 @@ class TroncoIzquierdo {
 class Nenufar {
 	var property position
 	method image() = "nenufar.png"
+	
+	method desplazarse(){
+		position = position.right(1) //asi se modifica siempre las posicones
+ 		if (self.position().x() == 20) { // me devuelve la posicion de x o y self.position().x/y()
+			position = position.left(20)
+		}
+	}	
 }
 
 // obstaculos
