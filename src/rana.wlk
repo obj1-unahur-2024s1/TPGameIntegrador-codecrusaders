@@ -7,7 +7,7 @@ import sonidos.*
 object rana {
     var property image = "ranaU.png"
     var property position = game.origin()
-    var previousPosition = game.origin()
+    var property previousPosition = game.origin()
     var cantVidas = 3
     
     
@@ -15,6 +15,8 @@ object rana {
         cantVidas -= 1
         if( cantVidas.between(1, 3)){
         	nivel.nivelActual().vidas().cambiarVisual() // Actualiza el visual de las vidas
+        	const p = new PerderVidas()
+        	p.sonido().play()
         }
     }
  
@@ -64,55 +66,6 @@ object rana {
     	cantVidas = 3
 	}
 	
-	// Método para mover la rana
-    method move(newPosition) {
-        previousPosition = position
-        position = newPosition
-    }
-
-    // Métodos para mover la rana en diferentes direcciones
-    method moverArriba() {
-    	image = "ranaU.png"
-        self.move(position.up(1))
-        self.ganoNivel()
-        if(self.position().y() == 20){
-        	position = position.down(1)
-        }
-        movimientoRana.sonar()
-    }
-
-    method moverAbajo() {
-    	image = "ranaD.png"
-        self.move(position.down(1))
-        self.ganoNivel()
-        if(self.position().y() == -1){
-        	position = position.up(1)
-        }
-        movimientoRana.sonar()
-    }
-
-    method moverIzquierda() {
-    	image = "ranaL.png"
-        self.move(position.left(1))
-        self.ganoNivel()
-        if(self.position().x() == -1){
-        	position = position.right(1)
-        }
-        movimientoRana.sonar()
-    }
-
-    method moverDerecha() {
-     	image = "ranaR.png"
-        self.move(position.right(1))
-        self.ganoNivel()
-        if(self.position().x() == 20){
-        	position = position.left(1)
-        }
-        movimientoRana.sonar()
-    }
-    
- 
-	
 	// Método para verificar si la rana está en una fila sin estar sobre un nenúfar
     method comprobarFilaNenufares(fila, nenufares) {
         if (self.position().y() == fila) {
@@ -133,5 +86,69 @@ object rana {
             }
         }
     }
+}   
+
+class Mover{
+	// Método para mover la rana
+    method move(newPosition) {
+        rana.previousPosition(rana.position())
+        rana.position(newPosition)
+    }
+    
+    method config(){
+    	rana.ganoNivel()    	
+        nivel.nivelActual().obstaculos().forEach{obstaculo => rana.chocadaConObstaculo(obstaculo)}
+    	const m = new MovimientoRana()
+    	m.sonido().play()
+    }
 
 }
+
+
+object moverArriba inherits Mover{
+	method mover(){
+		rana.image("ranaU.png")
+		self.move(rana.position().up(1))
+		if(rana.position().y() == 21){
+        rana.position(rana.position().down(1))
+    	}
+
+    	self.config()
+	}
+}
+
+object moverAbajo inherits Mover{
+	method mover(){
+		rana.image("ranaD.png")
+		self.move(rana.position().down(1))
+		if(rana.position().y() == -1){
+        rana.position(rana.position().up(1))
+        }
+        
+    	self.config()
+	}
+}
+
+object moverDerecha inherits Mover{
+	method mover(){
+		rana.image("ranaR.png")
+		self.move(rana.position().right(1))
+		if(rana.position().x() == 21){
+        rana.position(rana.position().left(1))
+    	}
+
+    	self.config()
+	}
+}
+
+object moverIzquierda inherits Mover{
+	method mover(){
+		rana.image("ranaL.png")
+		self.move(rana.position().left(1))
+		if(rana.position().y() == -1){
+        rana.position(rana.position().right(1))
+    	}
+
+    	self.config()
+	}
+} 

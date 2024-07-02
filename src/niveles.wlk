@@ -83,7 +83,6 @@ object nivelUnoCiudad {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		ambiente.fondo()
 		
 		// Añade los nenúfares
         nenufares.forEach { nenufar => game.addVisual(nenufar) }
@@ -118,23 +117,21 @@ object nivelUnoCiudad {
     	})
     	
 		// Configuración del teclado para mover la rana
-		keyboard.up().onPressDo{rana.moverArriba()}
-		keyboard.down().onPressDo{rana.moverAbajo()}
-		keyboard.left().onPressDo{rana.moverIzquierda()}
-		keyboard.right().onPressDo{rana.moverDerecha()}
+		keyboard.up().onPressDo{moverArriba.mover()}
+		keyboard.down().onPressDo{moverAbajo.mover()}
+		keyboard.left().onPressDo{moverIzquierda.mover()}
+		keyboard.right().onPressDo{moverDerecha.mover()}
 			
-	}
+		}
+		
 		method verificarColisionesYFilas() {
-    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
-    
-   		 // Verificar colisiones con autos en la misma fila
-    	autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
-    
-   		 // Verificar colisiones con obstáculos en la misma fila
-    	obstaculos.filter { obstaculo => obstaculo.position().x() == filaRana }.forEach { obstaculo => rana.chocadaConObstaculo(obstaculo) }
-    
-    	// Comprobar fila de nenúfares
-    	rana.comprobarFilaNenufares(15, nenufares)
+	    	const filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+	    
+	   		 // Verificar colisiones con autos en la misma fila
+	    	autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+	    	
+	    	// Comprobar fila de nenúfares
+	    	rana.comprobarFilaNenufares(15, nenufares)
 		}
 	
 }
@@ -172,6 +169,8 @@ object nivelDosCiudad {
     	new Nenufar(position = game.at(5,13)),
     	new Nenufar(position = game.at(11,13))
     ]
+    
+    const property obstaculos = []
 	
 	var property vidas = new Vidas()
 	
@@ -181,7 +180,6 @@ object nivelDosCiudad {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		ambiente.fondo()
 		
 		// Añade los nenúfares
         nenufares.forEach { nenufar => game.addVisual(nenufar) }
@@ -214,23 +212,22 @@ object nivelDosCiudad {
     	})
     	
 		// Configuración del teclado para mover la rana
-		keyboard.up().onPressDo{rana.moverArriba()}
-		keyboard.down().onPressDo{rana.moverAbajo()}
-		keyboard.left().onPressDo{rana.moverIzquierda()}
-		keyboard.right().onPressDo{rana.moverDerecha()}
-			
+		keyboard.up().onPressDo{moverArriba.mover()}
+		keyboard.down().onPressDo{moverAbajo.mover()}
+		keyboard.left().onPressDo{moverIzquierda.mover()}
+		keyboard.right().onPressDo{moverDerecha.mover()}
 		}
 		
 		method verificarColisionesYFilas() {
-    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
-    
-   			// Verificar colisiones con autos en la misma fila
-    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
-    
-    		// Comprobar fila de nenúfares
-    		rana.comprobarFilaNenufares(15, nenufares)
-	    	rana.comprobarFilaNenufares(13, nenufaresQuietos)
-    		rana.comprobarFilaNenufares(12, nenufares)
+	    	const filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+	    
+	   			// Verificar colisiones con autos en la misma fila
+	    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+	    
+	    		// Comprobar fila de nenúfares
+	    		rana.comprobarFilaNenufares(15, nenufares)
+		    	rana.comprobarFilaNenufares(13, nenufaresQuietos)
+	    		rana.comprobarFilaNenufares(12, nenufares)
 		}
 	
 }
@@ -268,19 +265,18 @@ object nivelUnoDesierto {
 		new Cactus(position = game.at(14,12))
 	]
 	
+	const property obstaculos = []
+	
 	const property fondo = 2
 	
 	method config(){	
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		ambiente.fondo()
 		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
-		
-		
 		
 		// Añade los cactus
 		cactus.forEach {cacti => game.addVisual(cacti)}
@@ -302,24 +298,21 @@ object nivelUnoDesierto {
     	})
     	
 		// Configuración del teclado para mover la rana
-		keyboard.up().onPressDo{rana.moverArriba()}
-		keyboard.down().onPressDo{rana.moverAbajo()}
-		keyboard.left().onPressDo{rana.moverIzquierda()}
-		keyboard.right().onPressDo{rana.moverDerecha()}
+		keyboard.up().onPressDo{moverArriba.mover()}
+		keyboard.down().onPressDo{moverAbajo.mover()}
+		keyboard.left().onPressDo{moverIzquierda.mover()}
+		keyboard.right().onPressDo{moverDerecha.mover()}
 			
 		}
 		
 		method verificarColisionesYFilas() {
-    	
-    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
-    	
-   			// Verificar colisiones en la misma fila
-    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
-     		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
- 
- 
-    
-    		
+	    	
+	    	const filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+	    	
+	   			// Verificar colisiones en la misma fila
+	    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+	     		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
+
 		}
 
 }
@@ -365,6 +358,9 @@ object nivelDosDesierto {
 		new PlantaRodadora(position = game.at(20, 5)),
 		new PlantaRodadora(position = game.at(20, 11))
 	]
+	
+	const property obstaculos = []
+	
 	var property vidas = new Vidas()
 	
 	const property fondo = 3
@@ -373,7 +369,6 @@ object nivelDosDesierto {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		ambiente.fondo()
 		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
@@ -408,25 +403,23 @@ object nivelDosDesierto {
     	})
     	
 		// Configuración del teclado para mover la rana
-		keyboard.up().onPressDo{rana.moverArriba()}
-		keyboard.down().onPressDo{rana.moverAbajo()}
-		keyboard.left().onPressDo{rana.moverIzquierda()}
-		keyboard.right().onPressDo{rana.moverDerecha()}
+		keyboard.up().onPressDo{moverArriba.mover()}
+		keyboard.down().onPressDo{moverAbajo.mover()}
+		keyboard.left().onPressDo{moverIzquierda.mover()}
+		keyboard.right().onPressDo{moverDerecha.mover()}
 			
 		}
 		
 		method verificarColisionesYFilas() {
-    	
-    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
-    	
-   			// Verificar colisiones en la misma fila
-    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
-    		plantas.filter{ planta => planta.position().x() == filaRana }.forEach { planta => rana.chocada(planta)}
-    		trenes.filter { tren => tren.position().x() == filaRana }.forEach { tren => rana.chocada(tren)}
-    		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
-    		
+	    	const filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+	    	
+	   			// Verificar colisiones en la misma fila
+	    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+	    		plantas.filter{ planta => planta.position().x() == filaRana }.forEach { planta => rana.chocada(planta)}
+	    		trenes.filter { tren => tren.position().x() == filaRana }.forEach { tren => rana.chocada(tren)}
+	    		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
+   
 		}
-		
-	
+
 }
 

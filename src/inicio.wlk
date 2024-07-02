@@ -1,6 +1,7 @@
 import wollok.game.*
 import niveles.*
 import rana.*
+import sonidos.*
 
 object comienzo{
 	method config(){
@@ -79,9 +80,18 @@ object pantallaGameOver inherits Pantalla {
 	override method image() = "pantallaGameOver.jpg"
 	override method config(){
 		game.clear()
+		
+		const p = new PerderNivel()
+		
 		if (not game.hasVisual(self)){
 			game.addVisual(self)
 		}
+		
+		if(!p.sonido().played()){
+			p.sonido().play()
+			p.loop()
+		}
+		
 		keyboard.r().onPressDo{
 			game.clear()
 			nivel.nivelActual().config()
