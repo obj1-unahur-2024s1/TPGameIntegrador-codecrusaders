@@ -1,6 +1,7 @@
 import wollok.game.*
 import rana.*
 import objetosDeNiveles.*
+import sonidos.*
 
 object nivel {
 	const niveles = []
@@ -82,42 +83,40 @@ object nivelUnoCiudad {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
+		ambiente.fondo()
 		
-		// añade los nenúfares
+		// Añade los nenúfares
         nenufares.forEach { nenufar => game.addVisual(nenufar) }
-        
+		
 		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
 		
-		// añade los autos
+		// Añade los autos
 		autos.forEach { auto => game.addVisual(auto) }
 		
-		// añade las llegadas
+		// Añade las llegadas
 		llegadas.forEach { llegada => game.addVisual(llegada) }
 		
-		 // añade los obstaculos
+		 // Añade los obstaculos
         obstaculos.forEach { obs => game.addVisual(obs) }
         
-		// Mueve los autos constantemente y comprueba si la rana chocó
+		// Mueve los autos constantemente
 		autos.forEach{ auto =>
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
-			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
 		}
 		
+		// Mueve los nenufares
 		nenufares.forEach{ nenufar =>
-			game.onTick(500, "moveNenufar", {nenufar.desplazarse()})
+			game.onTick(300, "moveNenufar", {nenufar.desplazarse()})
 		}
         
-        // comprueba si la rana chocó con un obstaculo
-        obstaculos.forEach { obstaculo =>
-            game.onTick(1, "ranaChocadaConObstaculo", { rana.chocadaConObstaculo(obstaculo) })
-        }
-        
-        // comprueba si la rana está en una fila específica sin estar sobre un nenúfar
-        game.onTick(1, "comprobarFilaNenufares", { rana.comprobarFilaNenufares(15, nenufares) })
-		
+        // Comprueba si le ocurre algo a la rana
+        game.onTick(50, "comprobarColisiones", {
+        	self.verificarColisionesYFilas()
+    	})
+    	
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
 		keyboard.down().onPressDo{rana.moverAbajo()}
@@ -125,6 +124,18 @@ object nivelUnoCiudad {
 		keyboard.right().onPressDo{rana.moverDerecha()}
 			
 	}
+		method verificarColisionesYFilas() {
+    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+    
+   		 // Verificar colisiones con autos en la misma fila
+    	autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+    
+   		 // Verificar colisiones con obstáculos en la misma fila
+    	obstaculos.filter { obstaculo => obstaculo.position().x() == filaRana }.forEach { obstaculo => rana.chocadaConObstaculo(obstaculo) }
+    
+    	// Comprobar fila de nenúfares
+    	rana.comprobarFilaNenufares(15, nenufares)
+		}
 	
 }
 
@@ -132,17 +143,35 @@ object nivelUnoCiudad {
 object nivelDosCiudad {
 	
 	const property autos = [ 
-		new AutoDerecha(position = game.at(0,6)),
-		new AutoIzquierda(position = game.at(20,8)),
-		new AutoDerecha(position = game.at(0,10)),
-		new AutoIzquierda(position = game.at(20,12)),
-		new AutoDerecha(position = game.at(0,14))
+		new AutoDerecha(position = game.at(0,3)),
+		new AutoIzquierda(position = game.at(20,4)),
+		new AutoDerecha(position = game.at(0,5)),
+		new AutoIzquierda(position = game.at(20,7)),
+		new AutoDerecha(position = game.at(0,8))
 	]
 
 	const property llegadas = [
 		new Llegada(position = game.at(5,18)),
 		new Llegada(position = game.at(13,18))
 	]
+	
+	const property nenufares = [
+        new Nenufar(position = game.at(2,15)),
+        new Nenufar(position = game.at(8,15)),
+        new Nenufar(position = game.at(13,15)),
+        new Nenufar(position = game.at(3,15)),
+        new Nenufar(position = game.at(9,15)),
+        new Nenufar(position = game.at(14,12)),
+        new Nenufar(position = game.at(2,12)),
+        new Nenufar(position = game.at(3,12)),
+        new Nenufar(position = game.at(13,12)),
+        new Nenufar(position = game.at(14,12))
+    ]
+    
+    const property nenufaresQuietos = [
+    	new Nenufar(position = game.at(5,13)),
+    	new Nenufar(position = game.at(11,13))
+    ]
 	
 	var property vidas = new Vidas()
 	
@@ -152,29 +181,57 @@ object nivelDosCiudad {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
+		ambiente.fondo()
+		
+		// Añade los nenúfares
+        nenufares.forEach { nenufar => game.addVisual(nenufar) }
+        nenufaresQuietos.forEach { nenufarQuieto => game.addVisual(nenufarQuieto)}
+		
 		game.addVisual(rana) 
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
 		
-		// añade los autos
+		// Añade los autos
 		autos.forEach { auto => game.addVisual(auto) }
-		
-		// añade las llegadas
+				
+		// Añade las llegadas
 		llegadas.forEach { llegada => game.addVisual(llegada) }
-		
-		// Mueve los autos constantemente y comprueba si la rana chocó
+        
+		// Mueve los autos constantemente
 		autos.forEach{ auto =>
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
-			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
 		}
 		
+		// Mueve los nenufares
+		nenufares.forEach{ nenufar =>
+			game.onTick(300, "moveNenufar", {nenufar.desplazarse()})
+		}
+        
+        // Comprueba si le ocurre algo a la rana
+        game.onTick(50, "comprobarColisiones", {
+        	self.verificarColisionesYFilas()
+    	})
+    	
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
 		keyboard.down().onPressDo{rana.moverAbajo()}
 		keyboard.left().onPressDo{rana.moverIzquierda()}
 		keyboard.right().onPressDo{rana.moverDerecha()}
-	}
+			
+		}
+		
+		method verificarColisionesYFilas() {
+    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+    
+   			// Verificar colisiones con autos en la misma fila
+    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+    
+    		// Comprobar fila de nenúfares
+    		rana.comprobarFilaNenufares(15, nenufares)
+	    	rana.comprobarFilaNenufares(13, nenufaresQuietos)
+    		rana.comprobarFilaNenufares(12, nenufares)
+		}
 	
 }
 
@@ -182,11 +239,14 @@ object nivelDosCiudad {
 object nivelUnoDesierto {
 	
 	const property autos = [ 
-		new AutoDerecha(position = game.at(0,6)),
-		new AutoIzquierda(position = game.at(20,8)),
+		new AutoDerecha(position = game.at(0,3)),
+		new AutoIzquierda(position = game.at(20,4)),
 		new AutoDerecha(position = game.at(0,10)),
-		new AutoIzquierda(position = game.at(20,12)),
-		new AutoDerecha(position = game.at(0,14))
+		new AutoIzquierda(position = game.at(20,11)),
+		new AutoIzquierda(position = game.at(0,9)),
+		new AutoDerecha(position = game.at(0,8)),
+		new AutoIzquierda(position = game.at(20,15)),
+		new AutoDerecha(position = game.at(0,16))
 	]
 
 	const property llegadas = [
@@ -196,7 +256,17 @@ object nivelUnoDesierto {
 	
 	var property vidas = new Vidas()
 	
-	const property planta = new PlantaRodadora(position = game.at(20, 2))
+	const property cactus = [ 
+		new Cactus(position = game.at(2,6)),
+		new Cactus(position = game.at(9,6)),
+		new Cactus(position = game.at(17,6)),
+		new Cactus(position = game.at(0,14)),
+		new Cactus(position = game.at(13,14)),
+		new Cactus(position = game.at(18,14)),
+		new Cactus(position = game.at(7,12)),
+		new Cactus(position = game.at(3,12)),
+		new Cactus(position = game.at(14,12))
+	]
 	
 	const property fondo = 2
 	
@@ -204,43 +274,74 @@ object nivelUnoDesierto {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		game.addVisual(rana) // Mueve la rana
+		ambiente.fondo()
+		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
-		game.addVisual(planta)
-		game.onTick(100, "moverPlanta", {planta.desplazarse()})
 		
-		// añade los autos
+		
+		
+		// Añade los cactus
+		cactus.forEach {cacti => game.addVisual(cacti)}
+		
+		// Añade los autos
 		autos.forEach { auto => game.addVisual(auto) }
-		
-		// añade las llegadas
+				
+		// Añade las llegadas
 		llegadas.forEach { llegada => game.addVisual(llegada) }
-		
-		// Mueve los autos constantemente y comprueba si la rana chocó
-		autos.forEach{ auto =>
-			game.onTick(100, "moverAuto", {auto.desplazarse()} )
-			game.onTick(1, "ranaChocada", {rana.chocada(auto)} )
-			game.onTick(1, "ranaChocada", {rana.chocada(planta)} )
-		}
-		
+        
+		// Mueve los autos y plantas
+		game.onTick(100, "moverObjetos", {
+			autos.forEach{auto => auto.desplazarse()}
+		})
+        
+        // Comprueba si le ocurre algo a la rana
+        game.onTick(50, "comprobarColisiones", {
+        	self.verificarColisionesYFilas()
+    	})
+    	
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
 		keyboard.down().onPressDo{rana.moverAbajo()}
 		keyboard.left().onPressDo{rana.moverIzquierda()}
 		keyboard.right().onPressDo{rana.moverDerecha()}
-	}
-	
+			
+		}
+		
+		method verificarColisionesYFilas() {
+    	
+    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+    	
+   			// Verificar colisiones en la misma fila
+    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+     		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
+ 
+ 
+    
+    		
+		}
+
 }
 
 
 
 object nivelDosDesierto {
 	
-	const property tren = [
-		new Locomotora(position = game.at(20,13)),
-		new Vagon(position = game.at(21,13)),
-		new Vagon(position = game.at(22,13))
+	const property autos = [
+		new AutoDerecha(position = game.at(0,8)),
+		new AutoIzquierda(position = game.at(20,9)),
+		new AutoDerecha(position = game.at(0,14)),
+		new AutoIzquierda(position = game.at(20,13))
+	]
+	
+	const property trenes = [
+		new Locomotora(position = game.at(0,3)),
+		new Vagon(position = game.at(-1,3)),
+		new Vagon(position = game.at(-2,3)),
+		new Locomotora(position = game.at(0,16)),
+		new Vagon(position = game.at(-1,16)),
+		new Vagon(position = game.at(-2,16))
 	]
 
 	const property llegadas = [
@@ -249,11 +350,21 @@ object nivelDosDesierto {
 	]
 	
 	const property cactus = [ 
-		new Cactus(position = game.at(2,16)),
-		new Cactus(position = game.at(9,16)),
-		new Cactus(position = game.at(17,16))
+		new Cactus(position = game.at(2,6)),
+		new Cactus(position = game.at(9,6)),
+		new Cactus(position = game.at(17,6)),
+		new Cactus(position = game.at(0,10)),
+		new Cactus(position = game.at(13,10)),
+		new Cactus(position = game.at(18,10)),
+		new Cactus(position = game.at(7,12)),
+		new Cactus(position = game.at(3,12)),
+		new Cactus(position = game.at(14,12))
 	]
 	
+	const property plantas = [
+		new PlantaRodadora(position = game.at(20, 5)),
+		new PlantaRodadora(position = game.at(20, 11))
+	]
 	var property vidas = new Vidas()
 	
 	const property fondo = 3
@@ -262,37 +373,60 @@ object nivelDosDesierto {
 		game.clear()
 		fondos.setImage()
 		game.addVisual(fondos)
-		game.addVisual(rana) // Mueve la rana
+		ambiente.fondo()
+		game.addVisual(rana)
 		game.addVisual(vidas)
 		rana.initialize()
 		vidas.initialize()
 		
-		tren.forEach {trn => game.addVisual(trn)}
-			tren.forEach {trn =>
-			game.onTick(100, "moverTren", {trn.desplazarse()})
-		}
 		
-		// añade las llegadas
+		// Añade los cactus
+		cactus.forEach { cacti => game.addVisual(cacti)}
+		
+		// Añade los trenes
+		trenes.forEach {tren => game.addVisual(tren)}
+		
+		// Añade las plantas rodadoras
+		plantas.forEach {planta => game.addVisual(planta)}
+		
+		// Añade los autos
+		autos.forEach { auto => game.addVisual(auto) }
+				
+		// Añade las llegadas
 		llegadas.forEach { llegada => game.addVisual(llegada) }
-		
-		// Mueve los autos constantemente y comprueba si la rana chocó
-		tren.forEach{ trn =>
-			game.onTick(1, "ranaChocada", {rana.chocada(trn)} )
-		}
-		
-		// comprueba si la rana se pinchó
-		// añade los cactus
-		cactus.forEach { c => game.addVisual(c) }
-		 cactus.forEach { c =>
-            game.onTick(1, "ranaPinchada", { rana.chocada(c) })
-        }
-		
+        
+		// Mueve los autos, los trenes y plantas
+		game.onTick(100, "moverObjetos", {
+			autos.forEach{auto => auto.desplazarse()}
+			plantas.forEach{planta => planta.desplazarse()}
+			trenes.forEach{tren => tren.desplazarse()}
+		})
+        
+        // Comprueba si le ocurre algo a la rana
+        game.onTick(50, "comprobarColisiones", {
+        	self.verificarColisionesYFilas()
+    	})
+    	
 		// Configuración del teclado para mover la rana
 		keyboard.up().onPressDo{rana.moverArriba()}
 		keyboard.down().onPressDo{rana.moverAbajo()}
 		keyboard.left().onPressDo{rana.moverIzquierda()}
 		keyboard.right().onPressDo{rana.moverDerecha()}
-	}
+			
+		}
+		
+		method verificarColisionesYFilas() {
+    	
+    	var filaRana = rana.position().x() // Obtiene la posición X de la rana para determinar la fila
+    	
+   			// Verificar colisiones en la misma fila
+    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
+    		plantas.filter{ planta => planta.position().x() == filaRana }.forEach { planta => rana.chocada(planta)}
+    		trenes.filter { tren => tren.position().x() == filaRana }.forEach { tren => rana.chocada(tren)}
+    		cactus.filter { cacti => cacti.position().x() == filaRana }.forEach { cacti => rana.chocada(cacti)}    
+    		
+		}
+		
 	
 }
 

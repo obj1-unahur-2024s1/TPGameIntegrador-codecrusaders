@@ -2,9 +2,10 @@ import wollok.game.*
 import niveles.*
 import inicio.*
 import objetosDeNiveles.*
+import sonidos.*
 
 object rana {
-    var property image = "rana.png"
+    var property image = "ranaU.png"
     var property position = game.origin()
     var previousPosition = game.origin()
     var cantVidas = 3
@@ -27,7 +28,7 @@ object rana {
         if (self.compartePosicion(unaCosa)) {
             self.perderVida()
             if (cantVidas <= 0) {
-            	image = "ranaMuerta.png"
+            	image = "ranaDead.png"
                 game.schedule(500, { => pantallaGameOver.config()} )
             } else {
                 self.position(game.origin())
@@ -58,7 +59,7 @@ object rana {
 	}
 	
 	method initialize(){
-		image = "rana.png"
+		image = "ranaU.png"
     	position = game.origin()
     	cantVidas = 3
 	}
@@ -71,36 +72,46 @@ object rana {
 
     // Métodos para mover la rana en diferentes direcciones
     method moverArriba() {
+    	image = "ranaU.png"
         self.move(position.up(1))
         self.ganoNivel()
-        if(self.position().y() == 21){
+        if(self.position().y() == 20){
         	position = position.down(1)
         }
+        movimientoRana.sonar()
     }
 
     method moverAbajo() {
+    	image = "ranaD.png"
         self.move(position.down(1))
         self.ganoNivel()
         if(self.position().y() == -1){
         	position = position.up(1)
         }
+        movimientoRana.sonar()
     }
 
     method moverIzquierda() {
+    	image = "ranaL.png"
         self.move(position.left(1))
         self.ganoNivel()
         if(self.position().x() == -1){
         	position = position.right(1)
         }
+        movimientoRana.sonar()
     }
 
     method moverDerecha() {
+     	image = "ranaR.png"
         self.move(position.right(1))
         self.ganoNivel()
-        if(self.position().x() == 21){
+        if(self.position().x() == 20){
         	position = position.left(1)
         }
+        movimientoRana.sonar()
     }
+    
+ 
 	
 	// Método para verificar si la rana está en una fila sin estar sobre un nenúfar
     method comprobarFilaNenufares(fila, nenufares) {
@@ -114,7 +125,7 @@ object rana {
             if (not sobreNenufar) {
                 self.perderVida()
                 if (cantVidas <= 0) {
-                    image = "ranaMuerta.png"
+                    image = "ranaDead.png"
                     game.schedule(500, { => pantallaGameOver.config()} )
                 } else {
                     self.position(game.origin())

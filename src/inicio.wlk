@@ -58,8 +58,8 @@ object pantallaEscenarios inherits Pantalla {
 		if (not game.hasVisual(self)){
 			game.addVisual(self)
 		}
-		fotogramas.add("pantallaEscenarios.jpg")
-		fotogramas.add("pantallaEscenarios2.jpg")
+		fotogramas.add("pantallaEscenarios.png")
+		fotogramas.add("pantallaEscenarios2.png")
 		
 		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
 		keyboard.c().onPressDo{
@@ -78,6 +78,7 @@ object pantallaEscenarios inherits Pantalla {
 object pantallaGameOver inherits Pantalla {
 	override method image() = "pantallaGameOver.jpg"
 	override method config(){
+		game.clear()
 		if (not game.hasVisual(self)){
 			game.addVisual(self)
 		}
