@@ -41,6 +41,7 @@ class Pantalla {
 object pantallaInicio inherits Pantalla {	
 	
 	override method config() {
+		
 		fotogramas.add("pantallaInicio.png")
 		fotogramas.add("pantallaInicio2.png")
 		
@@ -66,11 +67,25 @@ object pantallaEscenarios inherits Pantalla {
 		keyboard.c().onPressDo{
 			nivel.configurarEscenarioCiudad()
 			nivel.nivelActual().config()
+			const a = new Ambiente()
+		
+			if(!a.sonido().played()){
+				a.sonido().play()
+				a.config()
+		}
+		
 		}
 		
 		keyboard.d().onPressDo{
 			nivel.configurarEscenarioDesierto()
 			nivel.nivelActual().config()
+			const a = new Ambiente()
+		
+			if(!a.sonido().played()){
+				a.sonido().play()
+				a.config()
+			}
+		
 		}
 	}
 }
@@ -89,7 +104,7 @@ object pantallaGameOver inherits Pantalla {
 		
 		if(!p.sonido().played()){
 			p.sonido().play()
-			p.loop()
+			p.config()
 		}
 		
 		keyboard.r().onPressDo{

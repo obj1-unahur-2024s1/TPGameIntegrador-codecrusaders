@@ -50,17 +50,55 @@ class Llegada{
 
 class Nenufar {
 	var property position
-	method image() = "nenufar.png"
+	method image() = "nenufar.png"	
+}
+
+
+class Troncos{
+	var property position
 	
-	method desplazarse(){
+	method image() = ""
+	
+	method derecha(){
 		position = position.right(1) //asi se modifica siempre las posicones
  		if (self.position().x() == 20) { // me devuelve la posicion de x o y self.position().x/y()
 			position = position.left(20)
 		}
 	}
 	
-		
+	method izquierda(){
+		position = position.left(1) //asi se modifica siempre las posicones
+ 		if (self.position().x() == -2) { // me devuelve la posicion de x o y self.position().x/y()
+			position = position.right(20)
+		}
+	}
+	
+	method desplazarse(){}
 }
+
+class TroncoDerecha inherits Troncos {
+	override method image() = "tronco1.png"
+	override method desplazarse(){
+		self.derecha()
+	}	
+}
+
+class TroncoDerecha2 inherits TroncoDerecha{
+	override method image() = "tronco2.png"
+}
+
+
+class TroncoIzquierda inherits Troncos{
+	override method image() = "tronco1.png"
+	override method desplazarse(){
+		self.izquierda()
+	}
+}
+
+class TroncoIzquierda2 inherits TroncoIzquierda{
+	override method image() = "tronco2.png"
+}
+
 
 // obstaculos
 
@@ -104,7 +142,7 @@ class Tren{
 class Locomotora inherits Tren{
 	override method image() = "tren.png"
 	override method desplazarse(){
-		position = position.right(0.5) //asi se modifica siempre las posicones
+		position = position.right(2) //asi se modifica siempre las posicones
 
 		if (self.position().x() > 21) { // me devuelve la posicion de x o y self.position().x/y()
 			position = position.left(22)
@@ -115,7 +153,7 @@ class Locomotora inherits Tren{
 class Vagon inherits Tren{
 	override method image() = "vagon.png"
 	override method desplazarse(){
-		position = position.right(0.5) //asi se modifica siempre las posicones
+		position = position.right(2) //asi se modifica siempre las posicones
 
 		if (self.position().x() > 20) { // me devuelve la posicion de x o y self.position().x/y()
 			position = position.left(22)

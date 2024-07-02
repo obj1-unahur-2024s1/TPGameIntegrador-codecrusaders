@@ -100,6 +100,7 @@ class Mover{
         nivel.nivelActual().obstaculos().forEach{obstaculo => rana.chocadaConObstaculo(obstaculo)}
     	const m = new MovimientoRana()
     	m.sonido().play()
+    	m.config()
     }
 
 }

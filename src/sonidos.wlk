@@ -5,20 +5,24 @@ import objetosDeNiveles.*
 
 class MovimientoRana {
 	const property sonido = game.sound("select-sound-121244.mp3")
+	method config(){
+		sonido.volume(0.5)
+	}
 }
 
 class Ambiente{
-	const property sonido = game.sound("sonido-ambiente.mp3")
-
-	method loop(){
-		sonido.shouldLoop(false)
+	const property sonido = game.sound("game-music-loop-6-144641.mp3")
+	
+	method config(){
+		sonido.volume(0.5)
+		sonido.shouldLoop(true)
 	}
 }
 
 class PerderNivel{
 	const property sonido = game.sound("videogame-death-sound-43894.mp3")
 
-	method loop(){
+	method config(){
 		sonido.shouldLoop(false)
 	}
 }

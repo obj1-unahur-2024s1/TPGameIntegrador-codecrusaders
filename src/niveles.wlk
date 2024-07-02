@@ -55,26 +55,31 @@ object nivelUnoCiudad {
 	
 	const property obstaculos = [
         new CartelStop(position = game.at(14,2)),
+        new Valla(position = game.at(2,8)),
         new Valla(position = game.at(3,8)),
         new Valla(position = game.at(4,8)),
         new Valla(position = game.at(5,8)),
         new Valla(position = game.at(6,8)),
+        new Valla(position = game.at(7,8)),
         new Valla(position = game.at(10,8)),
         new Valla(position = game.at(11,8)),
         new Valla(position = game.at(12,8)),
-        new Valla(position = game.at(13,8))
-        
+        new Valla(position = game.at(13,8)),
+        new Valla(position = game.at(15,8)),
+        new Valla(position = game.at(16,8)),
+        new Valla(position = game.at(17,8)),
+        new CartelStop(position = game.at(2,14))
     ]
     
-    const property nenufares = [
-        new Nenufar(position = game.at(2,15)),
-        new Nenufar(position = game.at(8,15)),
-        new Nenufar(position = game.at(13,15)),
-        new Nenufar(position = game.at(3,15)),
-        new Nenufar(position = game.at(9,15)),
-        new Nenufar(position = game.at(14,15))
+    const property troncos = [
+        new TroncoDerecha(position = game.at(2,15)),
+        new TroncoDerecha(position = game.at(8,15)),
+        new TroncoDerecha(position = game.at(14,15)),
+        new TroncoDerecha2(position = game.at(3,15)),
+        new TroncoDerecha2(position = game.at(9,15)),
+        new TroncoDerecha2(position = game.at(15,15))
     ]
-	
+
 	var property vidas = new Vidas()
 	
 	const property fondo = 0
@@ -84,8 +89,8 @@ object nivelUnoCiudad {
 		fondos.setImage()
 		game.addVisual(fondos)
 		
-		// Añade los nenúfares
-        nenufares.forEach { nenufar => game.addVisual(nenufar) }
+		// Añade los troncos
+        troncos.forEach { tronco => game.addVisual(tronco) }
 		
 		game.addVisual(rana)
 		game.addVisual(vidas)
@@ -106,9 +111,9 @@ object nivelUnoCiudad {
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
 		}
 		
-		// Mueve los nenufares
-		nenufares.forEach{ nenufar =>
-			game.onTick(300, "moveNenufar", {nenufar.desplazarse()})
+		// Mueve los troncos
+		troncos.forEach{ tronco =>
+			game.onTick(300, "moverTronco", {tronco.desplazarse()})
 		}
         
         // Comprueba si le ocurre algo a la rana
@@ -131,7 +136,7 @@ object nivelUnoCiudad {
 	    	autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
 	    	
 	    	// Comprobar fila de nenúfares
-	    	rana.comprobarFilaNenufares(15, nenufares)
+	    	rana.comprobarFilaNenufares(15, troncos)
 		}
 	
 }
@@ -152,17 +157,18 @@ object nivelDosCiudad {
 		new Llegada(position = game.at(13,18))
 	]
 	
-	const property nenufares = [
-        new Nenufar(position = game.at(2,15)),
-        new Nenufar(position = game.at(8,15)),
-        new Nenufar(position = game.at(13,15)),
-        new Nenufar(position = game.at(3,15)),
-        new Nenufar(position = game.at(9,15)),
-        new Nenufar(position = game.at(14,12)),
-        new Nenufar(position = game.at(2,12)),
-        new Nenufar(position = game.at(3,12)),
-        new Nenufar(position = game.at(13,12)),
-        new Nenufar(position = game.at(14,12))
+	const property troncos = [
+        new TroncoDerecha(position = game.at(2,15)),
+        new TroncoDerecha(position = game.at(8,15)),
+        new TroncoDerecha(position = game.at(14,15)),
+        new TroncoDerecha2(position = game.at(3,15)),
+        new TroncoDerecha2(position = game.at(9,15)),
+        new TroncoDerecha2(position = game.at(15,15)),
+        
+        new TroncoIzquierda(position = game.at(2,12)),
+        new TroncoIzquierda(position = game.at(9,12)),
+        new TroncoIzquierda2(position = game.at(3,12)),
+        new TroncoIzquierda2(position = game.at(10,12))
     ]
     
     const property nenufaresQuietos = [
@@ -181,8 +187,9 @@ object nivelDosCiudad {
 		fondos.setImage()
 		game.addVisual(fondos)
 		
-		// Añade los nenúfares
-        nenufares.forEach { nenufar => game.addVisual(nenufar) }
+		// Añade los troncos
+        troncos.forEach { tronco => game.addVisual(tronco) }
+        // Añade los nenufares
         nenufaresQuietos.forEach { nenufarQuieto => game.addVisual(nenufarQuieto)}
 		
 		game.addVisual(rana) 
@@ -201,9 +208,9 @@ object nivelDosCiudad {
 			game.onTick(100, "moverAuto", {auto.desplazarse()} )
 		}
 		
-		// Mueve los nenufares
-		nenufares.forEach{ nenufar =>
-			game.onTick(300, "moveNenufar", {nenufar.desplazarse()})
+		// Mueve los troncos
+		troncos.forEach{ tronco =>
+			game.onTick(300, "moverTronco", {tronco.desplazarse()})
 		}
         
         // Comprueba si le ocurre algo a la rana
@@ -224,10 +231,10 @@ object nivelDosCiudad {
 	   			// Verificar colisiones con autos en la misma fila
 	    		autos.filter { auto => auto.position().x() == filaRana }.forEach { auto => rana.chocada(auto) }
 	    
-	    		// Comprobar fila de nenúfares
-	    		rana.comprobarFilaNenufares(15, nenufares)
+	    		// Comprobar fila de nenúfares y troncos
+	    		rana.comprobarFilaNenufares(15, troncos)
 		    	rana.comprobarFilaNenufares(13, nenufaresQuietos)
-	    		rana.comprobarFilaNenufares(12, nenufares)
+	    		rana.comprobarFilaNenufares(12, troncos)
 		}
 	
 }
@@ -332,9 +339,22 @@ object nivelDosDesierto {
 		new Locomotora(position = game.at(0,3)),
 		new Vagon(position = game.at(-1,3)),
 		new Vagon(position = game.at(-2,3)),
+		new Vagon(position = game.at(-1,3)),
+		new Vagon(position = game.at(-3,3)),
+		new Vagon(position = game.at(-4,3)),
+		new Vagon(position = game.at(-5,3)),
+		new Vagon(position = game.at(-6,3)),
+		new Vagon(position = game.at(-7,3)),
+		new Vagon(position = game.at(-8,3)),
 		new Locomotora(position = game.at(0,16)),
 		new Vagon(position = game.at(-1,16)),
-		new Vagon(position = game.at(-2,16))
+		new Vagon(position = game.at(-2,16)),
+		new Vagon(position = game.at(-3,16)),
+		new Vagon(position = game.at(-4,16)),
+		new Vagon(position = game.at(-5,16)),
+		new Vagon(position = game.at(-6,16)),
+		new Vagon(position = game.at(-7,16)),
+		new Vagon(position = game.at(-8,16))
 	]
 
 	const property llegadas = [
