@@ -41,23 +41,12 @@ object fondos{
 	}
 }
 
-class Malito{
-	var property position 
-	method image() = "malito.png"
-}
 
 class Llegada{
 	var property position 
 	method image() = "llegada.png"
 }
 
-class TroncoDerechos {
-	
-}
-
-class TroncoIzquierdo {
-	
-}
 
 class Nenufar {
 	var property position
@@ -86,10 +75,6 @@ class Valla inherits Obstaculos {
 
 class CartelStop inherits Obstaculos {
     override method image() = "cartelstop.png"
-}
-
-class Arbol inherits Obstaculos {
-    override method image() = "arbol.png"
 }
 
 // configuracion de las vidas de la rana

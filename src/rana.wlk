@@ -109,7 +109,7 @@ object moverArriba inherits Mover{
 	method mover(){
 		rana.image("ranaU.png")
 		self.move(rana.position().up(1))
-		if(rana.position().y() == 21){
+		if(rana.position().y() == 20){
         rana.position(rana.position().down(1))
     	}
 
@@ -133,7 +133,7 @@ object moverDerecha inherits Mover{
 	method mover(){
 		rana.image("ranaR.png")
 		self.move(rana.position().right(1))
-		if(rana.position().x() == 21){
+		if(rana.position().x() == 20){
         rana.position(rana.position().left(1))
     	}
 
@@ -145,7 +145,7 @@ object moverIzquierda inherits Mover{
 	method mover(){
 		rana.image("ranaL.png")
 		self.move(rana.position().left(1))
-		if(rana.position().y() == -1){
+		if(rana.position().x() == -1){
         rana.position(rana.position().right(1))
     	}
 
