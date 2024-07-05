@@ -5,6 +5,7 @@ import niveles.*
 
 class Auto {
 	var property position
+	const property esObstaculo = true
 	method image() = null
 	method desplazarse(){}
 }
@@ -33,6 +34,7 @@ class AutoIzquierda inherits Auto {
 
 object fondos{
 	var property position = game.origin()
+	const property esObstaculo = false
 	var property fondos = ["fondoCiudad.png", "fondoCiudad2.png", "fondoDesierto.png", "fondoDesierto2.png"]
 	var property image = ""
 	
@@ -44,32 +46,34 @@ object fondos{
 
 class Llegada{
 	var property position 
+	const property esObstaculo = false
 	method image() = "llegada.png"
 }
 
 
 class Nenufar {
 	var property position
+	const property esObstaculo = false
 	method image() = "nenufar.png"	
 }
 
 
 class Troncos{
 	var property position
-	
+	const property esObstaculo = false
 	method image() = ""
 	
 	method derecha(){
 		position = position.right(1) //asi se modifica siempre las posicones
  		if (self.position().x() == 20) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.left(20)
+			position = position.left(21)
 		}
 	}
 	
 	method izquierda(){
 		position = position.left(1) //asi se modifica siempre las posicones
- 		if (self.position().x() == -2) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(20)
+ 		if (self.position().x() == -1) { // me devuelve la posicion de x o y self.position().x/y()
+			position = position.right(21)
 		}
 	}
 	
@@ -104,6 +108,7 @@ class TroncoIzquierda2 inherits TroncoIzquierda{
 
 class Obstaculos {
     var property position
+    const property esObstaculo = false
     method image() = null
 }
 
@@ -133,6 +138,7 @@ class Vidas {
 // objetos nivel desierto
 class Tren{
 	var property position
+	const property esObstaculo = true
 	method image() = null
 	method desplazarse(){
 		
@@ -164,6 +170,7 @@ class Vagon inherits Tren{
 class PlantaRodadora {
     var fotograma = 0
     var property position
+    const property esObstaculo = true
     
     const visuals = ["rodadora1.png", "rodadora2.png", "rodadora3.png", "rodadora4.png", 
                      "rodadora5.png", "rodadora6.png", "rodadora7.png", "rodadora8.png"]
@@ -197,5 +204,6 @@ class PlantaRodadora {
 
 class Cactus{
 	var property position 
+	const property esObstaculo = true
 	method image() = "cactus2.png"
 }

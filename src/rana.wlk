@@ -18,6 +18,12 @@ object rana {
         	const p = new PerderVidas()
         	p.sonido().play()
         }
+        if (cantVidas <= 0) {
+            image = "ranaDead.png"
+            game.schedule(500, { => pantallaGameOver.config()} )
+        } else {
+            self.position(game.origin())
+        }
     }
  
     method vidasRestantes() = cantVidas
@@ -29,12 +35,6 @@ object rana {
     method chocada(unaCosa) {
         if (self.compartePosicion(unaCosa)) {
             self.perderVida()
-            if (cantVidas <= 0) {
-            	image = "ranaDead.png"
-                game.schedule(500, { => pantallaGameOver.config()} )
-            } else {
-                self.position(game.origin())
-            }
         }
     }
     
@@ -54,35 +54,23 @@ object rana {
 		}
 	}
 	
-	method montada(unaCosa) {
-		if (not self.compartePosicion(unaCosa)) {
-			game.stop()			
-		}
-	}
-	
 	method initialize(){
 		image = "ranaU.png"
     	position = game.origin()
     	cantVidas = 3
 	}
 	
-	// Método para verificar si la rana está en una fila sin estar sobre un nenúfar
-    method comprobarFilaNenufares(fila, nenufares) {
+	// Método para verificar si la rana está en una fila sin estar sobre un objeto
+    method comprobarFila(fila, objetos) {
         if (self.position().y() == fila) {
-            var sobreNenufar = false
-            nenufares.forEach { nenufar =>
-                if (self.compartePosicion(nenufar)) {
-                    sobreNenufar = true
+            var sobreObjeto = false
+            objetos.forEach { obj =>
+                if (self.compartePosicion(obj)) {
+                    sobreObjeto = true
                 }
             }
-            if (not sobreNenufar) {
+            if (not sobreObjeto) {
                 self.perderVida()
-                if (cantVidas <= 0) {
-                    image = "ranaDead.png"
-                    game.schedule(500, { => pantallaGameOver.config()} )
-                } else {
-                    self.position(game.origin())
-                }
             }
         }
     }
