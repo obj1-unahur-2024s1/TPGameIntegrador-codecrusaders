@@ -6,12 +6,13 @@ import niveles.*
 class Auto {
 	var property position
 	const property esObstaculo = true
+	const property esMeta = false
 	method image() = null
 	method desplazarse(){}
 }
 
 class AutoDerecha inherits Auto {
-  	override method image() = "autoAzul1.png"
+  	override method image() = "autoblanco.png"
   	
 	override method desplazarse(){
 		position = position.right(1) //asi se modifica siempre las posicones
@@ -22,7 +23,7 @@ class AutoDerecha inherits Auto {
 }
 
 class AutoIzquierda inherits Auto {
-  	override method image() = "autoVerde1.png"
+  	override method image() = "autoverde.png"
   	
 	override method desplazarse(){
 		position = position.left(1) //asi se modifica siempre las posicones
@@ -32,9 +33,18 @@ class AutoIzquierda inherits Auto {
 	}		
 }
 
+class Camioneta inherits AutoIzquierda{
+	override method image() = "camioneta.png"
+}
+
+class AutoRojo inherits AutoDerecha{
+	override method image() = "autoRojo.png"
+}
+
 object fondos{
 	var property position = game.origin()
 	const property esObstaculo = false
+	const property esMeta = false
 	var property fondos = ["fondoCiudad.png", "fondoCiudad2.png", "fondoDesierto.png", "fondoDesierto2.png"]
 	var property image = ""
 	
@@ -47,20 +57,52 @@ object fondos{
 class Llegada{
 	var property position 
 	const property esObstaculo = false
+	const property esMeta = true
+	var activa = true
+	
 	method image() = "llegada.png"
+	
+    method esMeta() {
+        return activa
+    }
+
+    method desactivar() {
+        activa = false
+        // Ocultar o cambiar el estado visual de la meta
+    }
+
+    method reset() {
+        activa = true
+        // Reiniciar el estado visual de la meta
+    }
+}
+
+class RanaMeta{
+    // Representa una rana que se queda en la meta alcanzada
+    var property position
+    const property image = "ranaD.png"
+    const property esMeta = false
 }
 
 
 class Nenufar {
 	var property position
 	const property esObstaculo = false
-	method image() = "nenufar.png"	
+	const property esMeta = false
+	
+	method image() = "nenufar.png"
+
+   	method reaparecerEnFilaEspecifica(fila){ 
+   		position = game.at(1.randomUpTo(game.width()-1).truncate(0), fila)
+   	}
 }
 
 
 class Troncos{
 	var property position
 	const property esObstaculo = false
+	const property esMeta = false
+	
 	method image() = ""
 	
 	method derecha(){
@@ -103,12 +145,33 @@ class TroncoIzquierda2 inherits TroncoIzquierda{
 	override method image() = "tronco2.png"
 }
 
+object estrellas {
+	var property position
+	
+	const property esMeta = false
+	
+	var property image = "estrella.png"
+	
+	method esObstaculo() = false
+  	
+  	method reaparecerAlAzar() {
+        const x = 1.randomUpTo(game.width()-1).truncate(0)
+        const y = 4.randomUpTo(game.height()-1).truncate(0)
+        position = game.at(x,y)
+    }
+}
+
+object contador {
+	var property position = game.at(2,17)
+	method text() = "Estrellas juntadas: " + (nivel.puntos())
+}
 
 // obstaculos
 
 class Obstaculos {
     var property position
     const property esObstaculo = false
+    const property esMeta = false
     method image() = null
 }
 
@@ -138,6 +201,7 @@ class Vidas {
 // objetos nivel desierto
 class Tren{
 	var property position
+	const property esMeta = false
 	const property esObstaculo = true
 	method image() = null
 	method desplazarse(){
@@ -171,6 +235,7 @@ class PlantaRodadora {
     var fotograma = 0
     var property position
     const property esObstaculo = true
+    const property esMeta = false
     
     const visuals = ["rodadora1.png", "rodadora2.png", "rodadora3.png", "rodadora4.png", 
                      "rodadora5.png", "rodadora6.png", "rodadora7.png", "rodadora8.png"]
@@ -205,5 +270,6 @@ class PlantaRodadora {
 class Cactus{
 	var property position 
 	const property esObstaculo = true
+	const property esMeta = false
 	method image() = "cactus2.png"
 }

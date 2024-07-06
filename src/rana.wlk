@@ -17,14 +17,16 @@ object rana {
         	nivel.nivelActual().vidas().cambiarVisual() // Actualiza el visual de las vidas
         	const p = new PerderVidas()
         	p.sonido().play()
-        }
+        } 
         if (cantVidas <= 0) {
             image = "ranaDead.png"
             game.schedule(500, { => pantallaGameOver.config()} )
         } else {
-            self.position(game.origin())
+            self.reset()
         }
     }
+    
+    method reset(){ self.position(game.origin())}
  
     method vidasRestantes() = cantVidas
     
@@ -38,8 +40,8 @@ object rana {
         }
     }
     
-    method chocadaConObstaculo(unObstaculo) {
-        if (self.compartePosicion(unObstaculo)) {
+    method chocadaConBloqueador(bloqueador) {
+        if (self.compartePosicion(bloqueador)) {
             // Revertir a la posición anterior
             self.position(previousPosition)
         }
@@ -64,7 +66,7 @@ object rana {
     method comprobarFila(fila, objetos) {
         if (self.position().y() == fila) {
             var sobreObjeto = false
-            objetos.forEach { obj =>
+            objetos.forEach{ obj =>
                 if (self.compartePosicion(obj)) {
                     sobreObjeto = true
                 }
@@ -84,11 +86,11 @@ class Mover{
     }
     
     method config(){
-    	rana.ganoNivel()    	
-        nivel.nivelActual().obstaculos().forEach{obstaculo => rana.chocadaConObstaculo(obstaculo)}
-    	const m = new MovimientoRana()
-    	m.sonido().play()
-    	m.config()
+    	//rana.ganoNivel()    	
+        nivel.nivelActual().bloqueadores().forEach{bloqueador => rana.chocadaConBloqueador(bloqueador)}
+    	const movimiento = new MovimientoRana()
+    	movimiento.sonido().play()
+    	movimiento.config()
     }
 
 }

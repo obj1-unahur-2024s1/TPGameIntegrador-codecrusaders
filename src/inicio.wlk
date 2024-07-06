@@ -35,17 +35,22 @@ class Pantalla {
 		}
 	}
 	
-	method config() {}
+	method config() {
+		game.clear()
+		if (not game.hasVisual(self)){
+			game.addVisual(self)
+		}
+	}
 }
 
 object pantallaInicio inherits Pantalla {	
 	
 	override method config() {
-		
 		fotogramas.add("pantallaInicio.png")
 		fotogramas.add("pantallaInicio2.png")
 		
 		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
+		
 		keyboard.enter().onPressDo{
 			game.removeTickEvent("animarFondo")
 			pantallaEscenarios.config()
@@ -56,22 +61,20 @@ object pantallaInicio inherits Pantalla {
 object pantallaEscenarios inherits Pantalla {
 
 	override method config() {
-		game.clear()
-		if (not game.hasVisual(self)){
-			game.addVisual(self)
-		}
+		super()
 		fotogramas.add("pantallaEscenarios.png")
 		fotogramas.add("pantallaEscenarios2.png")
 		
 		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
+		
 		keyboard.c().onPressDo{
 			nivel.configurarEscenarioCiudad()
 			nivel.nivelActual().config()
-			const a = new Ambiente()
-		
-			if(!a.sonido().played()){
-				a.sonido().play()
-				a.config()
+			
+			const ambiente = new Ambiente()
+			if(!ambiente.sonido().played()){
+				ambiente.sonido().play()
+				ambiente.config()
 		}
 		
 		}
@@ -79,11 +82,11 @@ object pantallaEscenarios inherits Pantalla {
 		keyboard.d().onPressDo{
 			nivel.configurarEscenarioDesierto()
 			nivel.nivelActual().config()
-			const a = new Ambiente()
-		
-			if(!a.sonido().played()){
-				a.sonido().play()
-				a.config()
+			
+			const ambiente = new Ambiente()
+			if(!ambiente.sonido().played()){
+				ambiente.sonido().play()
+				ambiente.config()
 			}
 		
 		}
@@ -94,22 +97,28 @@ object pantallaEscenarios inherits Pantalla {
 object pantallaGameOver inherits Pantalla {
 	override method image() = "pantallaGameOver.jpg"
 	override method config(){
-		game.clear()
+		super()
 		
-		const p = new PerderNivel()
+		const gameOver = new PerderNivel()
 		
-		if (not game.hasVisual(self)){
-			game.addVisual(self)
+		if(!gameOver.sonido().played()){
+			gameOver.sonido().play()
+			gameOver.config()
 		}
 		
-		if(!p.sonido().played()){
-			p.sonido().play()
-			p.config()
-		}
-		
-		keyboard.r().onPressDo{
-			game.clear()
+		keyboard.r().onPressDo{ 
+			nivel.nivelActual().configurarPuntos() 
 			nivel.nivelActual().config()
 		}
+	}
+}
+
+
+object pantallaWin inherits Pantalla {
+	override method image() = "pantallaGameOver.jpg"
+	override method config(){
+		super()
+		
+		keyboard.q().onPressDo{ game.stop() }
 	}
 }
