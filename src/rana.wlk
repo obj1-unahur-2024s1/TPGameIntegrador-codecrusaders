@@ -48,14 +48,6 @@ object rana {
     }
     
 	
-	method ganoNivel() {
-		nivel.nivelActual().llegadas().forEach { llegada =>
-			if ( self.position() == llegada.position()){
-				nivel.aumentarNivel()
-			}	
-		}
-	}
-	
 	method initialize(){
 		image = "ranaU.png"
     	position = game.origin()
@@ -67,7 +59,7 @@ object rana {
         if (self.position().y() == fila) {
             var sobreObjeto = false
             objetos.forEach{ obj =>
-                if (self.compartePosicion(obj)) {
+                if (self.compartePosicion(obj) and obj.visible()) {
                     sobreObjeto = true
                 }
             }
@@ -85,8 +77,7 @@ class Mover{
         rana.position(newPosition)
     }
     
-    method config(){
-    	//rana.ganoNivel()    	
+    method config(){   	
         nivel.nivelActual().bloqueadores().forEach{bloqueador => rana.chocadaConBloqueador(bloqueador)}
     	const movimiento = new MovimientoRana()
     	movimiento.sonido().play()

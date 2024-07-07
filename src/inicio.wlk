@@ -1,6 +1,7 @@
 import wollok.game.*
 import niveles.*
 import rana.*
+import objetosDeNiveles.*
 import sonidos.*
 
 object comienzo{
@@ -18,10 +19,11 @@ class Pantalla {
 	var property position = game.origin()
 	var fotograma = 0
 	const fotogramas = []
-	
-	method image() = fotogramas.get(self.fotogramaActual())
-	
-	method cambiarVisual() = self.image()
+	var property image 
+
+	method cambiarVisual(){
+		image = fotogramas.get(self.fotogramaActual())
+	}
 	
 	method fotogramaActual() = fotograma
 	
@@ -37,53 +39,61 @@ class Pantalla {
 	
 	method config() {
 		game.clear()
-		if (not game.hasVisual(self)){
+		if(not game.hasVisual(self)){
 			game.addVisual(self)
 		}
+		
+		self.agregarFotograma()
+		
+		game.onTick(100, "cambiarFotograma" , {self.cambiarFotograma()})
 	}
+
+	method agregarFotograma(){}
 }
 
-object pantallaInicio inherits Pantalla {	
+object pantallaInicio inherits Pantalla(image = "pantallaInicio.png") {	
 	
-	override method config() {
+	override method agregarFotograma(){
 		fotogramas.add("pantallaInicio.png")
 		fotogramas.add("pantallaInicio2.png")
-		
-		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
-		
+	}
+	
+	override method config() {
+		super()
+
 		keyboard.enter().onPressDo{
-			game.removeTickEvent("animarFondo")
 			pantallaEscenarios.config()
 		}
+		keyboard.e().onPressDo{ game.stop() }
 	}
 }
 
-object pantallaEscenarios inherits Pantalla {
-
-	override method config() {
-		super()
+object pantallaEscenarios inherits Pantalla(image = "pantallaEscenarios.png") {
+	override method agregarFotograma(){
 		fotogramas.add("pantallaEscenarios.png")
 		fotogramas.add("pantallaEscenarios2.png")
+	}
+	
+	override method config() {
+		super()
 		
-		game.onTick(200, "animarFondo", {self.cambiarFotograma()})
+		const ambiente = new Ambiente()
 		
 		keyboard.c().onPressDo{
 			nivel.configurarEscenarioCiudad()
-			nivel.nivelActual().config()
 			
-			const ambiente = new Ambiente()
+			nivel.nivelActual().config()
 			if(!ambiente.sonido().played()){
 				ambiente.sonido().play()
 				ambiente.config()
-		}
+			}
 		
 		}
 		
 		keyboard.d().onPressDo{
 			nivel.configurarEscenarioDesierto()
-			nivel.nivelActual().config()
 			
-			const ambiente = new Ambiente()
+			nivel.nivelActual().config()
 			if(!ambiente.sonido().played()){
 				ambiente.sonido().play()
 				ambiente.config()
@@ -94,8 +104,12 @@ object pantallaEscenarios inherits Pantalla {
 }
 
 
-object pantallaGameOver inherits Pantalla {
-	override method image() = "pantallaGameOver.jpg"
+object pantallaGameOver inherits Pantalla(image = "pantallaGameOver.png") {
+	override method agregarFotograma(){
+		fotogramas.add("pantallaGameOver.jpg")
+		fotogramas.add("pantallaGameOver2.jpg")
+	}
+	
 	override method config(){
 		super()
 		
@@ -114,11 +128,29 @@ object pantallaGameOver inherits Pantalla {
 }
 
 
-object pantallaWin inherits Pantalla {
-	override method image() = "pantallaGameOver.jpg"
+object pantallaWin inherits Pantalla(image = "fondoWin.png") {
+	override method agregarFotograma(){
+		fotogramas.add("fondoWin.png")
+		fotogramas.add("fondoWin2.png")
+	}
+	
 	override method config(){
 		super()
+	
+		game.schedule(300, {
+			if (not game.hasVisual(puntajeFinal)){
+				game.addVisual(puntajeFinal)
+			}
+		})
 		
-		keyboard.q().onPressDo{ game.stop() }
+		
+
+		keyboard.enter().onPressDo{ game.stop() }
 	}
+}
+
+object puntajeFinal{
+	const property position = game.at(16, 1)
+	method text() = (nivel.puntos()).toString()
+	method textColor() = "#000000"
 }

@@ -2,6 +2,7 @@ import wollok.game.*
 import rana.*
 import objetosDeNiveles.*
 import sonidos.*
+import inicio.*
 
 
 // objeto para configurar los niveles dados en la pantalla de seleccion
@@ -16,7 +17,7 @@ object nivel {
 		if(nivel == 0){
 			nivel += 1
 			self.siguiente()
-		} else{ game.stop() }
+		} else{ pantallaWin.config() }
 	}
 	
 	method nivelActual() = niveles.get(self.nivel())
@@ -82,7 +83,7 @@ class Niveles{
         
         // Comprueba si le ocurre algo a la rana
         game.onTick(100, "comprobarColisiones", {
-        	self.verificarColisionesYFilas()
+        	self.verificarColisionesAdicionales()
     	})
     	
 		// Configuración del teclado para mover la rana
@@ -90,9 +91,10 @@ class Niveles{
 		keyboard.down().onPressDo{moverAbajo.mover()}
 		keyboard.left().onPressDo{moverIzquierda.mover()}
 		keyboard.right().onPressDo{moverDerecha.mover()}
-		
+
 		// Configurar según el nivel
         self.configurarAdicional()
+        self.verificarColisionesYFilas()
 
     }
     
@@ -113,7 +115,7 @@ class Niveles{
         })
         
         // Implementar verificaciones adicionales según el nivel
-        self.verificarColisionesAdicionales()
+        //self.verificarColisionesAdicionales()
     }
     
     method randomPosition() = (0..20).anyOne() 
@@ -154,7 +156,7 @@ class NivelesCiudad inherits Niveles{
 	override method configurarAdicional(){	
 		// Mueve los troncos
 		troncos.forEach{ tronco =>
-			game.onTick(300, "moverTronco", {tronco.desplazarse()})
+			game.onTick(350, "moverTronco", {tronco.desplazarse()})
 		}
 	}
 	
@@ -173,6 +175,8 @@ class NivelesDesierto inherits Niveles{
     override method visualAdicional(){	
 		// Añade los cactus
 		cactus.forEach {cacti => game.addVisual(cacti)}
+		// Añade las plantas rodadoras
+		plantas.forEach {planta => game.addVisual(planta)}
 	}
   
 }
@@ -267,22 +271,21 @@ object nivelDosCiudad inherits NivelesCiudad(fondo = 1, totalMetas = 3){
 		]
 		
 		nenufares = [
-	    	new Nenufar(position = game.at(5,13)),
-	    	new Nenufar(position = game.at(11,13))
+	    	new Nenufar(position = game.at(5,15)),
+	    	new Nenufar(position = game.at(9,15)),
+	    	new Nenufar(position = game.at(13,15)),
+	    	new Nenufar(position = game.at(2,12)),
+	    	new Nenufar(position = game.at(9,12)),
+	    	new Nenufar(position = game.at(16,12))
     	]
     
     	troncos = [
-		    new TroncoDerecha(position = game.at(2,15)),
-		    new TroncoDerecha(position = game.at(8,15)),
-		    new TroncoDerecha(position = game.at(14,15)),
-		    new TroncoDerecha2(position = game.at(3,15)),
-		    new TroncoDerecha2(position = game.at(9,15)),
-		    new TroncoDerecha2(position = game.at(15,15)),
-		        
-		    new TroncoIzquierda(position = game.at(2,12)),
-		    new TroncoIzquierda(position = game.at(9,12)),
-		    new TroncoIzquierda2(position = game.at(3,12)),
-		    new TroncoIzquierda2(position = game.at(10,12))
+		    new TroncoDerecha(position = game.at(1,13)),
+		    new TroncoDerecha2(position = game.at(2,13)),
+		    new TroncoDerecha(position = game.at(7,13)),
+		    new TroncoDerecha2(position = game.at(8,13)),
+		 	new TroncoDerecha(position = game.at(13,13)),
+		    new TroncoDerecha2(position = game.at(14,13))
 		]
 	    
 		autos = [ 
@@ -296,14 +299,37 @@ object nivelDosCiudad inherits NivelesCiudad(fondo = 1, totalMetas = 3){
 			new AutoIzquierda(position = game.at(self.randomPosition(),4)),
 			new AutoIzquierda(position = game.at(self.randomPosition(),4))
 		]
+		
+		bloqueadores = [
+	        new Valla(position = game.at(2,16)),
+	        new Valla(position = game.at(3,16)),
+	        new Valla(position = game.at(4,16)),
+	        new Valla(position = game.at(6,16)),
+	        new Valla(position = game.at(7,16)),
+	        new Valla(position = game.at(8,16)),
+			new Valla(position = game.at(10,16)),
+			new Valla(position = game.at(11,16)),
+			new Valla(position = game.at(12,16)),
+			new Valla(position = game.at(14,16)),
+			new Valla(position = game.at(15,16)),
+			new Valla(position = game.at(16,16)),
+			new Valla(position = game.at(17,16)),
+			new Valla(position = game.at(18,16))
+		]
 	}
 	
+	override method configurarAdicional(){
+		super()
+		nenufares.forEach{ nenufar =>
+        	game.onTick(2000, "alternarVisibilidad", { nenufar.alternarVisibilidad() })
+    	}
+	}
 		
 	override method verificarColisionesAdicionales() {
 	    // Comprobar fila de nenúfares y troncos
-	    super()
-		rana.comprobarFila(13, nenufares)
-	    rana.comprobarFila(12, troncos)
+	    rana.comprobarFila(15, nenufares)
+		rana.comprobarFila(12, nenufares)
+	    rana.comprobarFila(13, troncos)
 	}
 	
 }
@@ -333,14 +359,37 @@ object nivelUnoDesierto inherits NivelesDesierto(fondo = 2, totalMetas = 2){
 	
 		autos = [ 
 			new AutoDerecha(position = game.at(0,3)),
+			new AutoDerecha(position = game.at(self.randomPosition(),3)),
 			new AutoIzquierda(position = game.at(20,4)),
 			new AutoDerecha(position = game.at(0,10)),
+			new AutoDerecha(position = game.at(self.randomPosition(),10)),
+			new AutoDerecha(position = game.at(self.randomPosition(),10)),
 			new AutoIzquierda(position = game.at(20,11)),
+			new AutoIzquierda(position = game.at(self.randomPosition(),11)),
 			new AutoIzquierda(position = game.at(0,9)),
+			new AutoIzquierda(position = game.at(self.randomPosition(),9)),
+			new AutoIzquierda(position = game.at(self.randomPosition(),9)),
 			new AutoDerecha(position = game.at(0,8)),
+			new AutoDerecha(position = game.at(self.randomPosition(),8)),
 			new AutoIzquierda(position = game.at(20,15)),
-			new AutoDerecha(position = game.at(0,16))
+			new AutoIzquierda(position = game.at(self.randomPosition(),15)),
+			new AutoDerecha(position = game.at(0,16)),
+			new AutoDerecha(position = game.at(9,16))
 		]
+		
+		plantas = [
+			new PlantaRodadora(position = game.at(20, 17)),
+			new PlantaRodadora(position = game.at(15, 17)),
+			new PlantaRodadora(position = game.at(10, 17))
+		]
+		
+	}
+	
+	override method configurarAdicional(){
+		// Mueve las plantas
+		game.onTick(200, "moverPlantas", {
+			plantas.forEach{planta => planta.desplazarse()}
+		})
 	}
 	
 }
@@ -386,13 +435,32 @@ object nivelDosDesierto inherits NivelesDesierto(fondo = 3, totalMetas = 3){
 			new Cactus(position = game.at(18,10)),
 			new Cactus(position = game.at(7,12)),
 			new Cactus(position = game.at(3,12)),
-			new Cactus(position = game.at(14,12))
+			new Cactus(position = game.at(14,12)),
+			new Cactus(position = game.at(5,15)),
+			new Cactus(position = game.at(9,15)),
+			new Cactus(position = game.at(13,15))
 		]
-	
+		
+		bloqueadores = [
+			new Valla(position = game.at(2,17)),
+			new Valla(position = game.at(3,17)),
+			new Valla(position = game.at(4,17)),
+			new Valla(position = game.at(6,17)),
+			new Valla(position = game.at(7,17)),
+			new Valla(position = game.at(8,17)),
+			new Valla(position = game.at(10,17)),
+			new Valla(position = game.at(11,17)),
+			new Valla(position = game.at(12,17)),
+			new Valla(position = game.at(14,17)),
+			new Valla(position = game.at(15,17)),
+			new Valla(position = game.at(16,17)),
+			new Valla(position = game.at(17,17))
+		]
+		
 		plantas = [
 			new PlantaRodadora(position = game.at(20, 5)),
 			new PlantaRodadora(position = game.at(20, 11))
-		]
+		]	
 	
 		autos = [
 			new AutoDerecha(position = game.at(0,8)),
@@ -407,8 +475,6 @@ object nivelDosDesierto inherits NivelesDesierto(fondo = 3, totalMetas = 3){
 		super()
 		// Añade los trenes
 		trenes.forEach {tren => game.addVisual(tren)}
-		// Añade las plantas rodadoras
-		plantas.forEach {planta => game.addVisual(planta)}
 	}
 	
 	override method configurarAdicional(){
