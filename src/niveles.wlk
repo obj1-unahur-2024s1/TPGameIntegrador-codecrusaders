@@ -50,22 +50,24 @@ class Niveles{
     var property vidas = new Vidas()
     var property fondo = 0
     var property puntos = 0
-    var metasAlcanzadas = 0
-    const totalMetas
+    var property metasAlcanzadas = 0
+    const property totalMetas
     
     method config() {
 		game.clear()
         fondos.setImage()
         game.addVisual(fondos)
-        game.addVisual(contador)
+        game.addVisual(contadorPuntos)
+        
   		self.initialize()
   		self.configurarMeta()
         self.visualAdicional()
+        
         game.addVisual(rana)
         game.addVisual(vidas)
         rana.initialize()
         vidas.initialize()
-        self.agregarEstrellas()
+        estrella.agregarEstrella()
         
         // Añade los bloqueadores
         nivel.nivelActual().bloqueadores().forEach { obs => game.addVisual(obs) }
@@ -99,40 +101,16 @@ class Niveles{
     }
     
     method verificarColisionesYFilas() {
-        game.whenCollideDo(rana, { x => 
-        	if(x.esObstaculo()){rana.perderVida()} // si es obstaculo muere
-        	if(x == estrellas){ nivel.sumarPunto(500) game.removeVisual(x) self.agregarEstrellas()} // si es una estrella suma puntos
-        	
-        	if(x.esMeta()){ 
-        		metasAlcanzadas += 1
-        		x.desactivar()
-                game.addVisual(new RanaMeta(position = rana.position()))
-        		rana.reset()
-        		if (metasAlcanzadas == totalMetas) {
-                    nivel.aumentarNivel()
-                }
-        	}
-        })
-        
-        // Implementar verificaciones adicionales según el nivel
-        //self.verificarColisionesAdicionales()
+        game.whenCollideDo(rana, { x => x.colisionarConRana()})
     }
     
     method randomPosition() = (0..20).anyOne() 
     
-    method agregarEstrellas(){
-		estrellas.reaparecerAlAzar()
-		game.addVisual(estrellas)
-	}
+	method configurarMeta(){ metasAlcanzadas = 0 }
 	
-	method configurarMeta(){
-		metasAlcanzadas = 0
-        llegadas.forEach { meta => meta.reset() }
-	}
+	method configurarPuntos(){nivel.puntos(0)}
 	
-	method configurarPuntos(){
-		nivel.puntos(0)
-	}
+	method aumentarMetasAlcanzadas(){ metasAlcanzadas += 1 }
 	
     method configurarAdicional(){}
     
@@ -378,9 +356,14 @@ object nivelUnoDesierto inherits NivelesDesierto(fondo = 2, totalMetas = 2){
 		]
 		
 		plantas = [
+			new PlantaRodadora(position = game.at(20, 7)),
+			new PlantaRodadora(position = game.at(15, 7)),
+			new PlantaRodadora(position = game.at(10, 7)),
+			new PlantaRodadora(position = game.at(5, 7)),
 			new PlantaRodadora(position = game.at(20, 17)),
 			new PlantaRodadora(position = game.at(15, 17)),
-			new PlantaRodadora(position = game.at(10, 17))
+			new PlantaRodadora(position = game.at(10, 17)),
+			new PlantaRodadora(position = game.at(5, 17))
 		]
 		
 	}
@@ -408,13 +391,11 @@ object nivelDosDesierto inherits NivelesDesierto(fondo = 3, totalMetas = 3){
 			new Locomotora(position = game.at(0,3)),
 			new Vagon(position = game.at(-1,3)),
 			new Vagon(position = game.at(-2,3)),
-			new Vagon(position = game.at(-1,3)),
 			new Vagon(position = game.at(-3,3)),
 			new Vagon(position = game.at(-4,3)),
 			new Vagon(position = game.at(-5,3)),
 			new Vagon(position = game.at(-6,3)),
 			new Vagon(position = game.at(-7,3)),
-			new Vagon(position = game.at(-8,3)),
 			new Locomotora(position = game.at(0,16)),
 			new Vagon(position = game.at(-1,16)),
 			new Vagon(position = game.at(-2,16)),
@@ -422,8 +403,7 @@ object nivelDosDesierto inherits NivelesDesierto(fondo = 3, totalMetas = 3){
 			new Vagon(position = game.at(-4,16)),
 			new Vagon(position = game.at(-5,16)),
 			new Vagon(position = game.at(-6,16)),
-			new Vagon(position = game.at(-7,16)),
-			new Vagon(position = game.at(-8,16))
+			new Vagon(position = game.at(-7,16))
 		]
 
 		cactus = [ 
@@ -458,8 +438,10 @@ object nivelDosDesierto inherits NivelesDesierto(fondo = 3, totalMetas = 3){
 		]
 		
 		plantas = [
-			new PlantaRodadora(position = game.at(20, 5)),
-			new PlantaRodadora(position = game.at(20, 11))
+			new PlantaRodadora(position = game.at(20, 4)),
+			new PlantaRodadora(position = game.at(10, 4)),
+			new PlantaRodadora(position = game.at(20, 11)),
+			new PlantaRodadora(position = game.at(15, 7))
 		]	
 	
 		autos = [

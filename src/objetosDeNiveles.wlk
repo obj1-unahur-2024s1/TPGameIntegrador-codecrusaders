@@ -6,44 +6,45 @@ import niveles.*
 class Objetos {
 	var property position = game.origin()
 	method image() = "invisibe.png"
-	method esObstaculo() = false
-	method esMeta() = false
-	method desplazarse(){}
-}
-
-class AutoDerecha inherits Objetos {
-  	override method esObstaculo() = true
-  	override method image() = "autoblanco.png"
-	override method desplazarse(){
-		position = position.right(1) //asi se modifica siempre las posicones
+	
+	method derecha(){
+		position = position.right(1) //asi se modifica siempre las posiciones
  		if (self.position().x() > 20) { // me devuelve la posicion de x o y self.position().x/y()
 			position = position.left(21)
 		}
+	}
+	
+	method izquierda(){
+		position = position.left(1) //asi se modifica siempre las posiciones
+ 		if (self.position().x() < -1) { // me devuelve la posicion de x o y self.position().x/y()
+			position = position.right(21)
+		}
+	}
+	
+	method desplazarse(){}
+	
+	method colisionarConRana(){}
+}
+
+class AutoDerecha inherits Objetos {
+  	override method image() = "autoblanco.png"
+  	override method colisionarConRana(){ rana.perderVida() }
+	override method desplazarse(){
+		self.derecha()
 	}		
 }
 
 class AutoIzquierda inherits Objetos{
-  	override method esObstaculo() = true
   	override method image() = "autoverde.png"
+  	override method colisionarConRana(){ rana.perderVida() }
 	override method desplazarse(){
-		position = position.left(1) //asi se modifica siempre las posicones
- 		if (self.position().x() < -1) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(21)
-		}
+		self.izquierda()
 	}		
-}
-
-class Camioneta inherits AutoIzquierda{
-	override method image() = "camioneta.png"
-}
-
-class AutoRojo inherits AutoDerecha{
-	override method image() = "autoRojo.png"
 }
 
 object fondos inherits Objetos(position = game.origin()){
 	var property fondos = ["fondoCiudad.png", "fondoCiudad2.png", "fondoDesierto.png", "fondoDesierto2.png"]
-	var image = ""
+	var property image = ""
 	
 	override method image() = image
 	
@@ -54,29 +55,23 @@ object fondos inherits Objetos(position = game.origin()){
 
 
 class Llegada inherits Objetos{
-	var activa = true
-
-    override method esMeta() {
-        return activa
-    }
+	
+	override method colisionarConRana(){
+		nivel.nivelActual().aumentarMetasAlcanzadas()
+		game.addVisual(new RanaMeta(position = rana.position()))
+		rana.reset()
+		if (nivel.nivelActual().metasAlcanzadas() == nivel.nivelActual().totalMetas()) {
+                    nivel.aumentarNivel()
+                }
+	}
     
     override method image() = "bandera.png"
-
-    method desactivar() {
-        activa = false
-        // Ocultar o cambiar el estado visual de la meta
-    }
-
-    method reset() {
-        activa = true
-        // Reiniciar el estado visual de la meta
-    }
 }
 
 class RanaMeta inherits Objetos{
     // Representa una rana que se queda en la meta alcanzada
     override method image() = "ranaD.png"
-    override method esObstaculo() = true
+    override method colisionarConRana(){ rana.perderVida() }
 }
 
 
@@ -94,48 +89,33 @@ class Nenufar inherits Objetos{
     }
 }
 
-
-class Troncos inherits Objetos{
+class TroncoDerecha inherits Objetos{
 	const property visible = true
-
-	method derecha(){
-		position = position.right(1) //asi se modifica siempre las posicones
- 		if (self.position().x() == 20) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.left(21)
-		}
-	}
-	
-	method izquierda(){
-		position = position.left(1) //asi se modifica siempre las posicones
- 		if (self.position().x() == -1) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.right(21)
-		}
-	}
-}
-
-class TroncoDerecha inherits Troncos{
 	override method image() = "tronco1.png"
 	override method desplazarse(){
 		self.derecha()
 	}	
 }
+
 class TroncoDerecha2 inherits TroncoDerecha{
 	override method image() = "tronco2.png"
 }
 
 
-class TroncoIzquierda inherits Troncos{
+class TroncoIzquierda inherits Objetos{
+	const property visible = true
 	override method image() = "tronco1.png"
 	override method desplazarse(){
 		self.izquierda()
 	}
 }
+
 class TroncoIzquierda2 inherits TroncoIzquierda{
 	override method image() = "tronco2.png"
 }
 
 
-object estrellas inherits Objetos{
+object estrella inherits Objetos{
 	override method image() = "estrella.png"
 	
   	method reaparecerAlAzar() {
@@ -143,17 +123,27 @@ object estrellas inherits Objetos{
         const y = 1.randomUpTo(game.height()-1).truncate(0)
         position = game.at(x,y)
     }
+    
+    method agregarEstrella(){
+		self.reaparecerAlAzar()
+		game.addVisual(self)
+	}
+	
+    override method colisionarConRana(){ 
+    	nivel.sumarPunto(500) 
+    	game.removeVisual(self) 
+    	self.agregarEstrella()
+    }
 }
 
-object contador {
+object contadorPuntos {
 	const property position = game.at(2,17)
-	method text() = "Estrellas juntadas: " + (nivel.puntos()).toString()
+	method text() = "Puntos acumulados: " + (nivel.puntos()).toString()
 	method textColor() = "#FEFFFE"
 }
 
 
-// obstaculos
-
+// bloqueadores
 class Valla inherits Objetos {
 	override method image() = "valla.png"
 }
@@ -178,12 +168,10 @@ class Vidas {
 }
 
 // objetos nivel desierto
-
-class Locomotora inherits Objetos{
-	override method esObstaculo() = true
-	override method image() = "tren.png"
-	override method desplazarse(){
-		position = position.right(2.2) //asi se modifica siempre las posicones
+class Tren inherits Objetos{
+	override method colisionarConRana(){ rana.perderVida() }
+	override method derecha(){
+		position = position.right(2.5) //asi se modifica siempre las posicones
 
 		if (self.position().x() > 21) { // me devuelve la posicion de x o y self.position().x/y()
 			position = position.left(22)
@@ -191,29 +179,32 @@ class Locomotora inherits Objetos{
 	}
 }
 
-class Vagon inherits Objetos{
-	override method esObstaculo() = true
-	override method image() = "vagon.png"
+class Locomotora inherits Tren{
+	override method image() = "tren.png"
 	override method desplazarse(){
-		position = position.right(2.2) //asi se modifica siempre las posicones
-
-		if (self.position().x() > 20) { // me devuelve la posicion de x o y self.position().x/y()
-			position = position.left(22)
-		}
+		self.derecha()
 	}
 }
 
-// si hereda clase objetos no funciona
-class PlantaRodadora {
+class Vagon inherits Tren{
+	override method image() = "vagon.png"
+	override method desplazarse(){
+		self.derecha()
+	}
+}
+
+
+class PlantaRodadora inherits Objetos{
     var fotograma = 0
-    var property position
-    const property esObstaculo = true
-    const property esMeta = false
     
     const visuals = ["rodadora1.png", "rodadora2.png", "rodadora3.png", "rodadora4.png", 
                      "rodadora5.png", "rodadora6.png", "rodadora7.png", "rodadora8.png"]
     
-    var property image = visuals.get(self.fotogramaActual())
+    var property image = visuals.get(0)
+    
+    override method image() = image
+    
+    override method colisionarConRana(){ rana.perderVida() }
     
     method cambiarVisual() {
         image = visuals.get(self.fotogramaActual())
@@ -229,18 +220,17 @@ class PlantaRodadora {
     
     method fotogramaActual() = fotograma
     
-    method desplazarse() {
+    override method desplazarse() {
         self.cambiarFotograma()
-        position = position.left(1)
-        
-        if (self.position().x() == -1) {
-            position = position.right(21)
-        }
+        position = position.left(2) //asi se modifica siempre las posiciones
+ 		if (self.position().x() < -1) { // me devuelve la posicion de x o y self.position().x/y()
+			position = position.right(21)
+		}
     }
 }
 
 
 class Cactus inherits Objetos{
 	override method image() = "cactus2.png"
-	override method esObstaculo() = true
+	override method colisionarConRana(){ rana.perderVida() }
 }

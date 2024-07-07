@@ -3,6 +3,16 @@ import rana.*
 import objetosDeNiveles.*
 
 
+object sonido{
+	
+	method ejecutar(nombre){
+		if(!nombre.sonido().played()){
+			nombre.sonido().play()
+			nombre.config()
+		}
+	}
+}
+
 class MovimientoRana {
 	const property sonido = game.sound("select-sound-121244.mp3")
 	method config(){

@@ -17,24 +17,13 @@ object comienzo{
 
 class Pantalla {
 	var property position = game.origin()
-	var fotograma = 0
+	var fotograma = false
 	const fotogramas = []
-	var property image 
 
-	method cambiarVisual(){
-		image = fotogramas.get(self.fotogramaActual())
-	}
-	
-	method fotogramaActual() = fotograma
-	
+	method image() = if (fotograma) fotogramas.get(1) else fotogramas.get(0)
+
 	method cambiarFotograma(){
-		return if(fotograma == 0){
-			fotograma += 1
-			self.cambiarVisual()
-		} else{
-			fotograma = 0
-			self.cambiarVisual()
-		}
+		fotograma = !fotograma
 	}
 	
 	method config() {
@@ -47,11 +36,13 @@ class Pantalla {
 		
 		game.onTick(100, "cambiarFotograma" , {self.cambiarFotograma()})
 	}
-
+	
+	method configuracionAdicional(){}
+	
 	method agregarFotograma(){}
 }
 
-object pantallaInicio inherits Pantalla(image = "pantallaInicio.png") {	
+object pantallaInicio inherits Pantalla{	
 	
 	override method agregarFotograma(){
 		fotogramas.add("pantallaInicio.png")
@@ -60,15 +51,12 @@ object pantallaInicio inherits Pantalla(image = "pantallaInicio.png") {
 	
 	override method config() {
 		super()
-
-		keyboard.enter().onPressDo{
-			pantallaEscenarios.config()
-		}
+		keyboard.enter().onPressDo{ pantallaEscenarios.config() }
 		keyboard.e().onPressDo{ game.stop() }
 	}
 }
 
-object pantallaEscenarios inherits Pantalla(image = "pantallaEscenarios.png") {
+object pantallaEscenarios inherits Pantalla {
 	override method agregarFotograma(){
 		fotogramas.add("pantallaEscenarios.png")
 		fotogramas.add("pantallaEscenarios2.png")
@@ -76,35 +64,27 @@ object pantallaEscenarios inherits Pantalla(image = "pantallaEscenarios.png") {
 	
 	override method config() {
 		super()
-		
-		const ambiente = new Ambiente()
-		
+
 		keyboard.c().onPressDo{
 			nivel.configurarEscenarioCiudad()
-			
-			nivel.nivelActual().config()
-			if(!ambiente.sonido().played()){
-				ambiente.sonido().play()
-				ambiente.config()
-			}
-		
+			self.configuracionAdicional()
 		}
 		
 		keyboard.d().onPressDo{
 			nivel.configurarEscenarioDesierto()
-			
-			nivel.nivelActual().config()
-			if(!ambiente.sonido().played()){
-				ambiente.sonido().play()
-				ambiente.config()
-			}
-		
+			self.configuracionAdicional()
 		}
+	}
+	
+	override method configuracionAdicional(){
+		const ambiente = new Ambiente()
+		nivel.nivelActual().config()
+		sonido.ejecutar(ambiente)
 	}
 }
 
 
-object pantallaGameOver inherits Pantalla(image = "pantallaGameOver.png") {
+object pantallaGameOver inherits Pantalla{
 	override method agregarFotograma(){
 		fotogramas.add("pantallaGameOver.jpg")
 		fotogramas.add("pantallaGameOver2.jpg")
@@ -114,11 +94,7 @@ object pantallaGameOver inherits Pantalla(image = "pantallaGameOver.png") {
 		super()
 		
 		const gameOver = new PerderNivel()
-		
-		if(!gameOver.sonido().played()){
-			gameOver.sonido().play()
-			gameOver.config()
-		}
+		sonido.ejecutar(gameOver)
 		
 		keyboard.r().onPressDo{ 
 			nivel.nivelActual().configurarPuntos() 
@@ -128,7 +104,7 @@ object pantallaGameOver inherits Pantalla(image = "pantallaGameOver.png") {
 }
 
 
-object pantallaWin inherits Pantalla(image = "fondoWin.png") {
+object pantallaWin inherits Pantalla{
 	override method agregarFotograma(){
 		fotogramas.add("fondoWin.png")
 		fotogramas.add("fondoWin2.png")
