@@ -7,8 +7,7 @@
 <img src="assets/pantallaEscenarios.png" width="400px" />
 
 ## Reglas de Juego / Instrucciones
-Controla a una rana que debe cruzar varios niveles llenos de obstáculos para alcanzar sus metas. Cada nivel tiene dos o tres objetivos que la rana debe alcanzar para desbloquear el siguiente nivel.
-Ayuda a la rana a llegar a cada objetivo mientras evitas los peligros en el camino y recolectas puntos!
+"Frogui" es una rana que debe cruzar varios niveles llenos de obstáculos para poder ganar. Hay dos escenarios diferentes "Ciudad" y "Desierto", según cual sea elegido los obstaculos varian. Cada nivel cuenta con dos o tres metas (objetivos) las cuales la rana debe llegar a cada una para desbloquear el siguiente nivel. Ayuda a frogui a alcanzar cada objetivo mientras evitas los peligros en el camino y, como extra, recolectas puntos!
 
 
 ## Equipo de desarrollo
