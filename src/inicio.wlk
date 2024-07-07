@@ -142,8 +142,6 @@ object pantallaWin inherits Pantalla(image = "fondoWin.png") {
 				game.addVisual(puntajeFinal)
 			}
 		})
-		
-		
 
 		keyboard.enter().onPressDo{ game.stop() }
 	}

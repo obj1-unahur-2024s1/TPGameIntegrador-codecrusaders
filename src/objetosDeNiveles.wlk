@@ -203,7 +203,7 @@ class Vagon inherits Objetos{
 	}
 }
 
-
+// si hereda clase objetos no funciona
 class PlantaRodadora {
     var fotograma = 0
     var property position
@@ -238,7 +238,6 @@ class PlantaRodadora {
         }
     }
 }
-
 
 
 class Cactus inherits Objetos{
