@@ -16,8 +16,8 @@
 - Alina Marquez
 - Macarena Lopez
 - Maite Ponce
-- .
-- .
+- Valentin Vallejos
+- Facundo Gimenez
   
 ## Otros
 
